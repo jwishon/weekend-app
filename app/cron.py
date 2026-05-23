@@ -53,23 +53,48 @@ PACIFIC = ZoneInfo("America/Los_Angeles")
 
 
 def upcoming_weekend(today: date | None = None) -> list[str]:
-    """Return [Fri, Sat, Sun] of the weekend we should be planning for.
+    """Return weekend dates [Fri, Sat, Sun, (Mon)] we should be planning for.
 
     Rule:
-    - Monday/Tuesday/Wednesday → the immediately upcoming weekend (this Fri/Sat/Sun)
-    - Thursday/Friday/Saturday/Sunday → the current weekend window (the Fri/Sat/Sun
-      that contains today, or the most recent past Friday for Thu)
+    - Monday/Tuesday/Wednesday → the immediately upcoming weekend
+    - Thursday/Friday/Saturday/Sunday → the current weekend window
 
-    This way the scheduled Wednesday 7am cron correctly fetches the weekend 2 days
-    out, AND a manual mid-weekend test fetches the weekend we're actually in.
+    Extends to 4 days when Monday is a federal holiday (Memorial Day, Labor Day,
+    Columbus, Veterans, MLK, Presidents) — Memorial Day events frequently happen
+    on the Monday and would otherwise be invisible to the verifier.
     """
     today = today or datetime.now(PACIFIC).date()
-    # Friday offset: positive when Friday is upcoming, zero on Friday, negative when
-    # we're mid-weekend or just past it. Mon=4d, Tue=3d, Wed=2d (canonical cron),
-    # Thu=1d, Fri=0d, Sat=-1d, Sun=-2d.
     days_to_fri = 4 - today.weekday()
     fri = today + timedelta(days=days_to_fri)
-    return [(fri + timedelta(days=i)).isoformat() for i in range(3)]
+    days = [(fri + timedelta(days=i)) for i in range(3)]
+    monday = fri + timedelta(days=3)
+    if _is_federal_monday_holiday(monday):
+        days.append(monday)
+    return [d.isoformat() for d in days]
+
+
+def _is_federal_monday_holiday(d: date) -> bool:
+    """True if d is a federal holiday observed on Monday (Memorial, Labor, MLK,
+    Presidents, Columbus). Memorial Day is the only one likely to land in our
+    typical use, but covering them all is cheap."""
+    if d.weekday() != 0:  # Monday
+        return False
+    # Memorial Day: last Monday of May
+    if d.month == 5 and d.day >= 25:
+        return True
+    # Labor Day: first Monday of September
+    if d.month == 9 and d.day <= 7:
+        return True
+    # MLK: third Monday of January
+    if d.month == 1 and 15 <= d.day <= 21:
+        return True
+    # Presidents: third Monday of February
+    if d.month == 2 and 15 <= d.day <= 21:
+        return True
+    # Columbus/Indigenous Peoples: second Monday of October
+    if d.month == 10 and 8 <= d.day <= 14:
+        return True
+    return False
 
 
 def _calendar_context(weekend_dates: list[str]) -> str:
@@ -269,6 +294,8 @@ def _normalize_week_data(week_data: dict) -> dict:
             item["id"] = slug or "item"
         if "where" not in item and "location" in item:
             item["where"] = item["location"]
+        if "when" not in item and "date" in item:
+            item["when"] = item["date"]
         if "why" not in item:
             item["why"] = item.get("description") or item.get("why_it_fits") or ""
         if "audience_tags" not in item or not isinstance(item.get("audience_tags"), list):
