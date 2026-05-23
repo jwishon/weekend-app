@@ -35,6 +35,8 @@ Always check these two and report whether something is happening this weekend:
 
 If you find an event happening on any of the weekend dates, populate the `event` block. If nothing public-facing is scheduled, set `event` to `null` and use the `empty_message` field. Optionally include a third or fourth venue if a regional convention/expo center (Westside Commons in Hillsboro, Lane Events Center in Eugene, etc.) has something notable that weekend.
 
+**Mandatory McMenamins scan.** Before declaring Part B complete, visit https://www.mcmenamins.com/ToDo.aspx and look at the master events calendar. For every event happening on the weekend dates at an **Oregon McMenamins venue** (Edgefield in Troutdale, Grand Lodge in Forest Grove, Kennedy School in Portland, Bagdad Theater in Portland, Crystal Hotel in Portland, Hotel Oregon in McMinnville, etc.), add it as a `mcmenamins` category item — there should usually be at least 2-3 of these (history & art tours, garden experiences, makers tours, theater pub films, smaller-venue live music). **Drop Washington venues** (Anderson School, Spanish Ballroom, Olympic Club, Kalama Harbor Lodge). If you find ZERO Oregon McMenamins events for the weekend, that itself is unusual — double-check before omitting.
+
 **Part B — Curated items.**
 
 12–20 items spread across these categories:

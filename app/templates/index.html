@@ -107,13 +107,9 @@
           <div class="aspect-video bg-slate-100 overflow-hidden">
             <img src="{{ venue.event.image_url }}" alt="{{ venue.event.title }}" loading="lazy" class="w-full h-full object-cover" />
           </div>
-          {% elif venue.empty_image_url %}
-          <div class="aspect-video bg-slate-100 overflow-hidden">
-            <img src="{{ venue.empty_image_url }}" alt="No event this weekend" loading="lazy" class="w-full h-full object-cover" />
-          </div>
           {% else %}
-          <div class="aspect-video bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center">
-            <span class="text-slate-400 text-sm font-semibold uppercase tracking-wider">No event this weekend</span>
+          <div class="aspect-video bg-slate-100 overflow-hidden">
+            <img src="{{ venue.empty_image_url or '/static/img/venue-empty-state.png' }}" alt="No event this weekend" loading="lazy" class="w-full h-full object-cover" />
           </div>
           {% endif %}
 

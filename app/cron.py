@@ -153,10 +153,9 @@ def _write_run_log(weekend_dates: list[str], stats: dict, usage: dict, errors: l
 - Items quarantined: {stats.get('quarantined', 0)}
 
 ## Images
-- Real (scraped og:image): {stats['images']['scraped']}
-- AI (kie generated): {stats['images']['ai']}
-- Cached (reused): {stats['images']['cached']}
-- Failed (gradient fallback): {stats['images']['failed']}
+- Generated (item images): {stats['images'].get('generated', 0)}
+- Featured venue images: {stats['images'].get('featured_venue_images', 0)}
+- Failed: {stats['images'].get('failed', 0)}
 
 ## Token usage
 - Input: {usage.get('input_tokens', 0)}
@@ -196,7 +195,7 @@ def run() -> dict:
     LOG_DIR.mkdir(parents=True, exist_ok=True)
     errors: list[str] = []
     stats: dict = {"published": False, "generated": 0, "passed": 0, "quarantined": 0,
-                   "quarantine_list": [], "images": {"scraped": 0, "ai": 0, "cached": 0, "failed": 0}}
+                   "quarantine_list": [], "images": {"generated": 0, "skipped": 0, "failed": 0, "featured_venue_images": 0}}
     usage: dict = {}
 
     weekend_dates = upcoming_weekend()
@@ -264,15 +263,17 @@ def run() -> dict:
     stats["quarantine_list"] = quarantined
 
     if len(passed) >= MIN_ITEMS_TO_PUBLISH:
-        # Source images for everything that passed verification — try real
-        # photos from the source page first (og:image), fall back to AI.
-        # Non-fatal: items without an image just render with a category gradient.
+        # Generate AI images for everything that passed verification + any
+        # featured venue events that came back populated. Non-fatal: items
+        # without an image just render with the category gradient placeholder,
+        # featured venues without an image fall back to the empty-state asset.
         try:
             img_summary = images.generate_for_items(passed)
-            stats["images"] = img_summary
+            venue_count = images.generate_for_featured_venues(week_data.get("featured_venues", []))
+            stats["images"] = {**img_summary, "featured_venue_images": venue_count}
         except Exception as e:
-            log.exception("image sourcing step crashed")
-            errors.append(f"image sourcing: {e}")
+            log.exception("image generation step crashed")
+            errors.append(f"image generation: {e}")
         week_data["items"] = passed
         out_path = DATA_DIR / f"week-{weekend_dates[0]}.json"
         out_path.write_text(json.dumps(week_data, indent=2, ensure_ascii=False), encoding="utf-8")
