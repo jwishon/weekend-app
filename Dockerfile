@@ -2,8 +2,9 @@ FROM python:3.12-slim
 
 WORKDIR /app
 
-# System deps kept minimal — Phase 3 may add curl for cron health checks
+# System deps kept minimal — curl required for Coolify's container healthcheck probe
 RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl \
     && rm -rf /var/lib/apt/lists/*
 
 COPY requirements.txt .
