@@ -196,6 +196,29 @@ def get_preferences(weeks: int = 8) -> JSONResponse:
     })
 
 
+@app.get("/api/week")
+def get_api_week() -> JSONResponse:
+    """Return the full currently-loaded week JSON. Read-only debug endpoint —
+    lets us see calendar_context, item count by category, image_url paths,
+    and quarantine state without exec'ing into the container."""
+    return JSONResponse(load_current_week())
+
+
+@app.get("/api/last-run")
+def get_api_last_run() -> JSONResponse:
+    """Return the most recent cron_runs row from SQLite — status, note, timestamp.
+    Use after triggering /admin/run-cron to see what happened without log-diving."""
+    import sqlite3
+    db_path = "/app/var/weekend.db"
+    try:
+        with sqlite3.connect(db_path) as conn:
+            cur = conn.execute("SELECT ts, status, note FROM cron_runs ORDER BY id DESC LIMIT 5")
+            rows = [{"ts": r[0], "status": r[1], "note": r[2]} for r in cur.fetchall()]
+            return JSONResponse({"recent_runs": rows})
+    except sqlite3.OperationalError as e:
+        return JSONResponse({"recent_runs": [], "error": str(e)})
+
+
 def _state_for_item(item_id: str) -> dict:
     """Return a single item's current state — used as the response for write endpoints
     so the client can update without a separate GET."""
