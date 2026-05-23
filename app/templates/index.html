@@ -69,6 +69,72 @@
 
   <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 sm:py-8">
 
+    {% if featured_venues %}
+    <section class="mb-6 sm:mb-8">
+      <div class="flex items-baseline justify-between mb-3">
+        <h2 class="text-sm font-bold uppercase tracking-wider text-slate-500">At the big venues</h2>
+        <span class="text-xs text-slate-400">Always checked</span>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+        {% for venue in featured_venues %}
+        <article class="bg-white rounded-2xl shadow-sm overflow-hidden flex flex-col {% if not venue.event %}opacity-90{% endif %}">
+          {% if venue.event and venue.event.image_url %}
+          <div class="aspect-video bg-slate-100 overflow-hidden">
+            <img src="{{ venue.event.image_url }}" alt="{{ venue.event.title }}" loading="lazy" class="w-full h-full object-cover" />
+          </div>
+          {% else %}
+          <div class="aspect-video bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center">
+            <span class="text-slate-400 text-sm font-semibold uppercase tracking-wider">No event this weekend</span>
+          </div>
+          {% endif %}
+
+          <div class="p-4 sm:p-5 flex flex-col flex-1 gap-3">
+            <div class="text-xs font-semibold uppercase tracking-wide text-slate-500">{{ venue.name }}</div>
+
+            {% if venue.event %}
+            <h3 class="text-lg sm:text-xl font-bold leading-tight text-slate-900">{{ venue.event.title }}</h3>
+
+            {% if venue.event.audience_tags %}
+            <div class="flex flex-wrap gap-1.5">
+              {% for tag in venue.event.audience_tags %}
+              <span class="text-xs px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 font-medium">{{ tag }}</span>
+              {% endfor %}
+            </div>
+            {% endif %}
+
+            <dl class="text-sm text-slate-600 space-y-1">
+              <div class="flex gap-2">
+                <dt class="font-semibold text-slate-500 w-14 shrink-0">When</dt>
+                <dd>{{ venue.event.when }}</dd>
+              </div>
+              <div class="flex gap-2">
+                <dt class="font-semibold text-slate-500 w-14 shrink-0">Where</dt>
+                <dd>{{ venue.where }}</dd>
+              </div>
+              <div class="flex gap-2">
+                <dt class="font-semibold text-slate-500 w-14 shrink-0">Drive</dt>
+                <dd>{{ venue.drive_time_from_hillsboro_min }} min from Hillsboro</dd>
+              </div>
+            </dl>
+
+            <p class="text-sm text-slate-700 leading-relaxed">{{ venue.event.why }}</p>
+            {% else %}
+            <h3 class="text-lg sm:text-xl font-bold leading-tight text-slate-500">{{ venue.empty_message or "Nothing this weekend." }}</h3>
+            <p class="text-sm text-slate-500 leading-relaxed">Worth a check next Wednesday when the new week drops.</p>
+            {% endif %}
+
+            <div class="mt-auto pt-3 border-t border-slate-100 flex items-center justify-end">
+              {% if venue.source_url %}
+              <a href="{{ venue.source_url }}" target="_blank" rel="noopener noreferrer" class="text-xs text-slate-400 hover:text-slate-600 underline">venue calendar</a>
+              {% endif %}
+            </div>
+          </div>
+        </article>
+        {% endfor %}
+      </div>
+    </section>
+    {% endif %}
+
     {% if not items %}
     <div class="text-center py-16 text-slate-500">
       <p class="text-lg font-medium">Nothing in this category this weekend.</p>

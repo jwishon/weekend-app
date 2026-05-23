@@ -69,6 +69,9 @@ async def home(request: Request, category: str | None = None) -> HTMLResponse:
             "active_category": category or "all",
             "weekend_dates": data.get("weekend_dates", []),
             "weather_summary": data.get("weather_summary", {}),
+            # Featured venues render as always-on cards above the grid.
+            # Only show on "All" view so they don't get hidden by category filtering.
+            "featured_venues": data.get("featured_venues", []) if not category or category == "all" else [],
         },
     )
 
