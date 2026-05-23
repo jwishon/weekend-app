@@ -24,7 +24,9 @@ TEMPLATES_DIR = BASE_DIR / "app" / "templates"
 # Display order for category filter pills
 CATEGORY_ORDER = [
     "outdoors",
+    "mcmenamins",
     "markets-and-festivals",
+    "indoor-historical",
     "concerts",
     "coast",
     "gorge-and-hood",
