@@ -1,0 +1,554 @@
+{
+  "generated_at": "2026-05-23T09:30:00-07:00",
+  "weekend_dates": [
+    "2026-05-22",
+    "2026-05-23",
+    "2026-05-24",
+    "2026-05-25"
+  ],
+  "calendar_context": "Memorial Day weekend (May 25 observed). 3-day federal holiday, Friday through Monday. Themes: veterans, military tributes, flag ceremonies (Willamette National Cemetery), start-of-summer outdoor push, Willamette Valley Memorial Day winery open house weekend, parades, patriotic music.",
+  "weather_summary": {
+    "hillsboro": "Sunny Friday–Sunday with highs 74–81°F, cooler Monday around 65°F with afternoon rain rolling in.",
+    "coast": "Partly cloudy, highs 55–62°F, breezy. Borderline beach weather Fri–Sat; Sunday/Monday turn rainy with south winds gusting to 38 mph.",
+    "gorge": "Mostly sunny, highs 73–77°F Fri–Sun, partly cloudy mid-70s Saturday. Prime Gorge weather with west winds 5–15 mph.",
+    "mt-hood": "Sunny Fri–Sat with highs 56–59°F at Government Camp; Sunday brings rain/snow mix above 6,800 ft with breezy west winds gusting to 34 mph."
+  },
+  "featured_venues": [
+    {
+      "id": "portland-expo-center",
+      "name": "Portland Expo Center",
+      "where": "2060 N Marine Dr, Portland",
+      "drive_time_from_hillsboro_min": 30,
+      "source_url": "https://www.expocenter.org/calendar",
+      "event": {
+        "title": "USA Dodgeball Premier Tour — Portland Stop",
+        "when": "Saturday & Sunday, May 23–24",
+        "why": "National competitive dodgeball tour stop with division-based brackets all day. High-energy, weird-enough-to-be-fun, easy walk-in spectator vibe. Perfect rainy-Sunday backup.",
+        "audience_tags": [
+          "family",
+          "teens",
+          "kid-friendly"
+        ],
+        "image_hint": "USA Dodgeball tournament Portland Expo Center indoor courts crowd",
+        "image_url": "/static/img/portland-expo-dodgeball.png"
+      }
+    },
+    {
+      "id": "westside-commons",
+      "name": "Westside Commons (Wingspan Event Center)",
+      "where": "801 NE 34th Ave, Hillsboro (Wingspan Event & Conference Center)",
+      "drive_time_from_hillsboro_min": 5,
+      "source_url": "https://www.westsidecomiccon.com/",
+      "event": {
+        "title": "Westside Comic Con — Washington County's first major pop-culture convention",
+        "when": "Saturday 9am–10pm, Sunday 9am–6pm (May 23–24)",
+        "why": "Brand-new for 2026 and 5 minutes from home — gaming, vendor art booths, cosplay guests, a Geeklesque burlesque tribute Saturday night (18+). Weekend pass starts at $25. Teen-friendly during expo hours.",
+        "audience_tags": [
+          "family",
+          "teens",
+          "kid-friendly"
+        ],
+        "image_hint": "comic con convention hall cosplay vendors gaming Hillsboro Westside Commons",
+        "image_url": null
+      }
+    },
+    {
+      "id": "lan-su-chinese-garden",
+      "name": "Lan Su Chinese Garden",
+      "where": "239 NW Everett St, Portland",
+      "drive_time_from_hillsboro_min": 30,
+      "source_url": "https://lansugarden.org/whats-on/",
+      "event": {
+        "title": "Cultural Immersion Saturdays + AANHPI Heritage programming",
+        "when": "Saturday May 23 — included with admission; live Chinese music Fridays noon–3pm",
+        "why": "Final weekend of the Cultural Immersion Saturdays series, plus AANHPI Heritage Month events. Erhu, ruan qin, and pipa performances Friday in the courtyard. Tea house upstairs.",
+        "audience_tags": [
+          "date-night",
+          "family",
+          "kid-friendly"
+        ],
+        "image_hint": "Lan Su Chinese Garden Portland Ming dynasty pavilion koi pond stone pagoda",
+        "image_url": "/static/img/lansu-garden.png"
+      }
+    },
+    {
+      "id": "portland-art-museum",
+      "name": "Portland Art Museum",
+      "where": "1219 SW Park Ave, Portland",
+      "drive_time_from_hillsboro_min": 25,
+      "source_url": "https://portlandartmuseum.org/calendar/",
+      "event": {
+        "title": "David Hockney exhibition + 'Monterey Pop' 4K Criterion screening",
+        "when": "Open Tue–Sun 10am–5pm (open Memorial Day weekend)",
+        "why": "Hockney's Cali poolside paintings paired with the museum's 'Pretty, Witty and Gay' weekend film series. Sunday film matinee makes a clean rainy-Monday plan.",
+        "audience_tags": [
+          "date-night",
+          "adults-only"
+        ],
+        "image_hint": "Portland Art Museum gallery interior David Hockney California pool painting",
+        "image_url": null
+      }
+    }
+  ],
+  "venue_scan_log": [
+    {
+      "venue": "Portland Expo Center",
+      "url": "https://www.expocenter.org/calendar",
+      "state": "has_event",
+      "note": "USA Dodgeball Premier Tour, May 23–24. Surfaced as featured venue."
+    },
+    {
+      "venue": "Oregon Convention Center",
+      "url": "https://www.oregoncc.org/attend/events",
+      "state": "has_event",
+      "note": "Furlandia furry convention May 22–24 at Hyatt Regency at OCC. Niche, 18+ leaning — left in scan log rather than surfaced."
+    },
+    {
+      "venue": "Westside Commons (Wingspan)",
+      "url": "https://www.westside-commons.com/events",
+      "state": "has_event",
+      "note": "Official Westside Commons calendar showed no events. Cross-referenced news outlets (Portland Tribune, Hillsboro News Times) and the Comic Con's own site confirmed it is hosted at Wingspan Event & Conference Center within the Westside Commons complex on May 23-24."
+    },
+    {
+      "venue": "Portland Art Museum",
+      "url": "https://portlandartmuseum.org/exhibitions",
+      "state": "has_event",
+      "note": "Hockney exhibition + weekend Criterion film series. Surfaced as featured venue."
+    },
+    {
+      "venue": "OMSI",
+      "url": "https://omsi.edu/visit",
+      "state": "has_event",
+      "note": "TITANIC: The Artifact Exhibition runs through May 31. Surfaced in items as rainy-day option."
+    },
+    {
+      "venue": "Lan Su Chinese Garden",
+      "url": "https://lansugarden.org/events",
+      "state": "has_event",
+      "note": "Cultural Immersion Saturdays (final week), live Chinese music Friday. Surfaced as featured venue."
+    },
+    {
+      "venue": "Pittock Mansion",
+      "url": "https://pittockmansion.org/events",
+      "state": "no_event",
+      "note": "Open daily 9am–5pm, self-guided tours, but no special programming on the weekend dates. Volunteer event May 26."
+    },
+    {
+      "venue": "Oregon Historical Society",
+      "url": "https://www.ohs.org/events",
+      "state": "no_event",
+      "note": "Museum open regular hours (M–Sat 10–5, Sun 12–5) but no dated public events on the weekend. Obukan Judo Dojo and Oregon history exhibits available."
+    }
+  ],
+  "items": [
+    {
+      "id": "willamette-cemetery-memorial-day",
+      "title": "Memorial Day Ceremony at Willamette National Cemetery",
+      "category": "family",
+      "audience_tags": [
+        "family",
+        "holiday"
+      ],
+      "when": "Monday, May 25 — ceremony at 1pm; scouts plant 130,000 flags Saturday morning",
+      "where": "11800 SE Mt Scott Blvd, Happy Valley",
+      "drive_time_from_hillsboro_min": 50,
+      "why": "The largest Memorial Day commemoration in the Pacific Northwest since 1950. Scouts of America place a flag at every one of the 130,000 graves Saturday — visually staggering. Monday ceremony draws thousands.",
+      "weather_rationale": "Mostly cloudy with light rain possible Monday — outdoor ceremony goes regardless; bring layers.",
+      "source_url": "https://www.cem.va.gov/cems/nchp/willamette.asp",
+      "image_hint": "Willamette National Cemetery flags rows headstones Memorial Day Oregon",
+      "image_url": null
+    },
+    {
+      "id": "vietnam-veterans-memorial-portland",
+      "title": "Oregon Vietnam Veterans Memorial — Reading of the Names",
+      "category": "family",
+      "audience_tags": [
+        "family",
+        "holiday"
+      ],
+      "when": "Monday, May 25 — name reading 10–11am, ceremony 11am–12pm",
+      "where": "4000 SW Canyon Rd, Washington Park (near Oregon Zoo), Portland",
+      "drive_time_from_hillsboro_min": 25,
+      "why": "Every Oregonian killed or missing in the Vietnam War read aloud, followed by a brief ceremony at the spiral memorial walk. Quiet, deliberate, and 15 minutes closer than Willamette National.",
+      "weather_rationale": "Cloudy with light rain Monday — outdoor but compact; under canopy of mature trees.",
+      "source_url": "https://memorialdayoregon.com/index.php/portland/",
+      "image_hint": "Oregon Vietnam Veterans Memorial spiral walk Washington Park granite wall names",
+      "image_url": null
+    },
+    {
+      "id": "willamette-valley-memorial-wine-weekend",
+      "title": "Memorial Weekend in Wine Country",
+      "category": "south-valley",
+      "audience_tags": [
+        "date-night",
+        "adults-only",
+        "holiday"
+      ],
+      "when": "Friday–Monday, May 22–25 — most wineries open 11am–5pm",
+      "where": "Yamhill-Carlton, McMinnville, Dundee, Newberg AVAs",
+      "drive_time_from_hillsboro_min": 50,
+      "why": "The big spring open-house weekend across Willamette Valley wineries. Barrel tastings, library releases, food trucks, member discounts for armed forces. Yamhill Valley Vineyards runs Sunday Funday May 23–25; Knudsen Vineyards has BBQ + Pinot pairings on the terrace Sat–Sun.",
+      "weather_rationale": "Sunny mid-70s in the valley Fri–Sun — peak patio-tasting weather. Monday will be cooler and damp.",
+      "source_url": "https://www.willamettewines.com/may-in-wine-country/memorial-day-weekend/",
+      "image_hint": "Willamette Valley vineyard rolling hills tasting room patio wine glasses Pinot",
+      "image_url": "/static/img/mcminnville-wine.png"
+    },
+    {
+      "id": "portland-saturday-market-may23",
+      "title": "Portland Saturday Market",
+      "category": "markets-and-festivals",
+      "audience_tags": [
+        "family",
+        "outdoors",
+        "kid-friendly"
+      ],
+      "when": "Saturday 10am–5pm, Sunday 11am–4:30pm",
+      "where": "Tom McCall Waterfront Park, 2 SW Naito Pkwy, Portland",
+      "drive_time_from_hillsboro_min": 25,
+      "why": "The granddaddy of PNW open-air markets. Memorial Day weekend brings extra vendors and live music on the waterfront stage. Rose Festival CityFair is right next door — easy pair for the day.",
+      "weather_rationale": "Sunny low 80s Saturday — outdoor-perfect.",
+      "source_url": "https://www.portlandsaturdaymarket.com/",
+      "image_hint": "Portland Saturday Market white tents booths Willamette River Burnside Bridge crowd",
+      "image_url": "/static/img/portland-saturday-market.png"
+    },
+    {
+      "id": "rose-festival-cityfair-opening",
+      "title": "Rose Festival CityFair Opening Night + Fireworks",
+      "category": "markets-and-festivals",
+      "audience_tags": [
+        "family",
+        "teens",
+        "kid-friendly"
+      ],
+      "when": "Friday May 22, 5pm–10pm — fireworks ~9:45pm",
+      "where": "Tom McCall Waterfront Park, 98 SW Naito Pkwy, Portland",
+      "drive_time_from_hillsboro_min": 25,
+      "why": "Rose Festival kicks off Friday with a ribbon-cutting, 50+ live performances across the run, carnival rides, food vendors, and choreographed fireworks over the Willamette. $12 day-pass for rides. Best fireworks seat in the city.",
+      "weather_rationale": "Warm Friday evening, low chance of rain — ideal carnival/fireworks night.",
+      "source_url": "https://www.rosefestival.org/events/2026/opening-night",
+      "image_hint": "Portland Rose Festival CityFair waterfront ferris wheel fireworks Willamette River Hawthorne Bridge",
+      "image_url": null
+    },
+    {
+      "id": "multnomah-county-fair-oaks-park",
+      "title": "Multnomah County Fair at Oaks Park",
+      "category": "family",
+      "audience_tags": [
+        "family",
+        "kid-friendly",
+        "teens"
+      ],
+      "when": "Saturday–Monday, May 23–25 — fair hours daily",
+      "where": "Oaks Amusement Park, 7805 SE Oaks Park Way, Portland",
+      "drive_time_from_hillsboro_min": 35,
+      "why": "Free admission ($4 parking). Three days of competitive exhibits, Portland Lucha Libre wrestling, pioneer village, wiener dog races, La Familia Day Sunday with Hispanic dancing. Stack with Oaks Park rides and the skating rink.",
+      "weather_rationale": "Warm and sunny Sat–Sun, cooler with rain Monday — most of the fair is outdoor/tented.",
+      "source_url": "https://multcofair.com/",
+      "image_hint": "Multnomah County Fair Oaks Park amusement rides exhibits Portland family",
+      "image_url": null
+    },
+    {
+      "id": "hillsboro-saturday-farmers-market",
+      "title": "Downtown Hillsboro Saturday Farmers Market",
+      "category": "markets-and-festivals",
+      "audience_tags": [
+        "family",
+        "outdoors"
+      ],
+      "when": "Saturday May 23, 9am–1pm",
+      "where": "Main St between 1st and 3rd, Downtown Hillsboro",
+      "drive_time_from_hillsboro_min": 5,
+      "why": "Five minutes from home and the most local thing on the list. Spring produce is rolling in — strawberries, asparagus, salad greens. Easy Saturday-morning move before the rest of the day.",
+      "weather_rationale": "Sunny 79°F Saturday — peak market weather.",
+      "source_url": "https://hillsboromarkets.org/downtown",
+      "image_hint": "Downtown Hillsboro Farmers Market Main Street tents fresh produce historic storefronts",
+      "image_url": null
+    },
+    {
+      "id": "beaverton-farmers-market-may23",
+      "title": "Beaverton Farmers Market",
+      "category": "markets-and-festivals",
+      "audience_tags": [
+        "family",
+        "outdoors"
+      ],
+      "when": "Saturday May 23, 8:30am–1:30pm",
+      "where": "12375 SW 5th St, Beaverton",
+      "drive_time_from_hillsboro_min": 15,
+      "why": "Largest all-agricultural farmers market in Oregon. Bigger vendor lineup than Hillsboro — nursery growers, ranchers, artisan bakers, cheese makers. Hit one or the other Saturday morning.",
+      "weather_rationale": "Sunny morning — outdoor market goes ahead easily.",
+      "source_url": "https://www.beavertonfarmersmarket.com/",
+      "image_hint": "Beaverton Farmers Market Saturday morning crowd produce stalls flowers downtown",
+      "image_url": null
+    },
+    {
+      "id": "edgefield-history-tour-may23",
+      "title": "Edgefield's History & Art Tour",
+      "category": "mcmenamins",
+      "audience_tags": [
+        "date-night",
+        "family"
+      ],
+      "when": "Saturday May 23 — 10am, 1pm, or 4pm (60–75 min)",
+      "where": "McMenamins Edgefield, 2126 SW Halsey St, Troutdale",
+      "drive_time_from_hillsboro_min": 45,
+      "why": "Guided walk through the 1911 Poor Farm grounds with stories behind the art, the buildings, and the murals tucked into every nook. Pair with dinner at the Black Rabbit. McMenamins-only Saturday programming.",
+      "weather_rationale": "Sunny and warm — perfect for a walking tour outdoors.",
+      "source_url": "https://www.mcmenamins.com/events/276255-edgefield-gardens-tour",
+      "image_hint": "Edgefield Manor Troutdale historic poor farm brick building murals gardens",
+      "image_url": "/static/img/edgefield-history-tour.png"
+    },
+    {
+      "id": "grand-lodge-gardens-may23",
+      "title": "Grand Lodge Gardens — self-guided wander",
+      "category": "mcmenamins",
+      "audience_tags": [
+        "family",
+        "outdoors",
+        "date-night",
+        "kid-friendly"
+      ],
+      "when": "Saturday or Sunday — gardens open daylight hours",
+      "where": "McMenamins Grand Lodge, 3505 Pacific Ave, Forest Grove",
+      "drive_time_from_hillsboro_min": 20,
+      "why": "20 minutes from home and most Hillsboro folks have never wandered the Grand Lodge gardens. Rhododendrons should still be on display. Pair with lunch in the pub or a soak in the saltwater pool.",
+      "weather_rationale": "Sunny and warm — peak garden weather.",
+      "source_url": "https://www.mcmenamins.com/grand-lodge",
+      "image_hint": "Grand Lodge Forest Grove historic Masonic building rhododendron garden footpath",
+      "image_url": "/static/img/grand-lodge-garden.png"
+    },
+    {
+      "id": "latourell-falls-loop",
+      "title": "Latourell Falls loop",
+      "category": "outdoors",
+      "audience_tags": [
+        "family",
+        "outdoors",
+        "kid-friendly"
+      ],
+      "when": "Anytime — 2.4-mile loop, 1.5–2hr",
+      "where": "Historic Columbia River Highway, near Corbett",
+      "drive_time_from_hillsboro_min": 40,
+      "why": "Easy loop past the 249-ft Latourell Falls and a smaller upper falls. Less crowded than Multnomah on holiday weekends. Note: Gorge trails are slippery even on sunny days (a 72-year-old hiker fell here this week) — wear grippy shoes.",
+      "weather_rationale": "Sunny and warm in the Gorge — perfect hike weather, but watch wet rocks near the falls.",
+      "source_url": "https://www.oregonhikers.org/field_guide/Latourell_Falls_Loop_Hike",
+      "image_hint": "Latourell Falls Columbia Gorge 249 foot waterfall basalt columns moss",
+      "image_url": "/static/img/latourell-falls.png"
+    },
+    {
+      "id": "tom-mccall-rowena-wildflowers",
+      "title": "Tom McCall Preserve + Rowena Crest wildflowers",
+      "category": "gorge-and-hood",
+      "audience_tags": [
+        "date-night",
+        "outdoors",
+        "family"
+      ],
+      "when": "Saturday or Sunday — best in morning light",
+      "where": "Tom McCall Preserve, 6656 Historic Columbia River Hwy, Mosier",
+      "drive_time_from_hillsboro_min": 85,
+      "why": "Last call on peak wildflower season — balsamroot, lupine, paintbrush. 300+ plant species across the plateau. Drive the old highway loop with the famous Rowena Crest hairpin overlook. Lunch in Hood River after.",
+      "weather_rationale": "Sunny and warm in the east Gorge — peak conditions, but it's exposed and windy.",
+      "source_url": "https://www.nature.org/en-us/get-involved/how-to-help/places-we-protect/tom-mccall-preserve-at-rowena/",
+      "image_hint": "Rowena Crest Tom McCall Preserve yellow balsamroot purple lupine Columbia River bluff",
+      "image_url": null
+    },
+    {
+      "id": "hood-river-waterfront",
+      "title": "Hood River waterfront + kiteboarding watch",
+      "category": "gorge-and-hood",
+      "audience_tags": [
+        "family",
+        "outdoors",
+        "teens",
+        "date-night"
+      ],
+      "when": "Saturday or Sunday afternoon",
+      "where": "Event Site & Waterfront Park, Hood River",
+      "drive_time_from_hillsboro_min": 75,
+      "why": "Memorial Day weekend kicks off windsurf/kite season. Walk the waterfront, grab lunch at pFriem or Solstice, watch the river show. Pair with Tom McCall in the morning for a full Gorge day.",
+      "weather_rationale": "Sunny 73–77°F Fri–Sun with steady west wind 5–15 mph — peak conditions on the river.",
+      "source_url": "https://visithoodriver.com/events/",
+      "image_hint": "Hood River waterfront Columbia River kiteboarders sails windsurf colorful Mt Adams backdrop",
+      "image_url": "/static/img/hood-river-waterfront.png"
+    },
+    {
+      "id": "manzanita-beach-day",
+      "title": "Manzanita beach walk",
+      "category": "coast",
+      "audience_tags": [
+        "family",
+        "outdoors",
+        "date-night"
+      ],
+      "when": "Friday or Saturday — Sunday/Monday turn rainy",
+      "where": "Manzanita, OR",
+      "drive_time_from_hillsboro_min": 95,
+      "why": "Long, quiet beach with the Neahkahnie headland framing the south end. Less of a circus than Cannon Beach on a holiday weekend. Stop in for fish and chips at Left Coast Siesta or wine at MacGregor's.",
+      "weather_rationale": "Partly cloudy 60–62°F Fri–Sat with light winds — borderline beach weather, layered. Skip Sunday and Monday: rain and 38mph south gusts.",
+      "source_url": "https://exploremanzanita.com",
+      "image_hint": "Manzanita beach Oregon coast Neahkahnie headland low tide footprints",
+      "image_url": "/static/img/manzanita-beach.png"
+    },
+    {
+      "id": "trillium-lake-loop",
+      "title": "Trillium Lake loop + Mt. Hood views",
+      "category": "gorge-and-hood",
+      "audience_tags": [
+        "family",
+        "outdoors",
+        "kid-friendly"
+      ],
+      "when": "Friday or Saturday — 1.9-mile flat loop, 1hr",
+      "where": "Trillium Lake, near Government Camp",
+      "drive_time_from_hillsboro_min": 100,
+      "why": "Flat boardwalk loop around a mirror lake with Mt. Hood reflected straight on. The campground is still snowed in but the day-use lot opens for the holiday weekend. Sunny Sat is the window before Sunday's snow chance.",
+      "weather_rationale": "Sunny 56–59°F Fri–Sat at Government Camp — clear views of Hood. Sunday brings rain/snow above 6,800ft — skip late weekend.",
+      "source_url": "https://www.oregonhikers.org/field_guide/Trillium_Lake_Loop_Hike",
+      "image_hint": "Trillium Lake reflection of Mount Hood snowy peak boardwalk pine trees foreground",
+      "image_url": "/static/img/trillium-lake.png"
+    },
+    {
+      "id": "shanghai-tunnels-tour",
+      "title": "Portland Underground (Shanghai Tunnels) tour",
+      "category": "indoor-historical",
+      "audience_tags": [
+        "teens",
+        "adults-only",
+        "date-night"
+      ],
+      "when": "Saturday & Sunday — tours run on the hour, advance booking recommended",
+      "where": "120 NW 3rd Ave, Old Town Portland",
+      "drive_time_from_hillsboro_min": 30,
+      "why": "Underground passages used in the 1800s for storage and (allegedly) shanghaiing sailors off the waterfront. Atlas-Obscura-grade weird history, indoors and dry. Perfect rainy-Monday backup.",
+      "weather_rationale": "Indoor — perfect contingency for the rainy Monday forecast.",
+      "source_url": "https://www.shanghaitunnels.info/",
+      "image_hint": "Portland Shanghai Tunnels underground brick passage lantern Old Town",
+      "image_url": null
+    },
+    {
+      "id": "freakybuttrue-peculiarium",
+      "title": "Freakybuttrue Peculiarium",
+      "category": "hidden-gems",
+      "audience_tags": [
+        "teens",
+        "family",
+        "adults-only"
+      ],
+      "when": "Sun 11am–6pm, Sat 11am–6pm (admission $10, $7 Tuesdays)",
+      "where": "2234 NW Thurman St, Portland",
+      "drive_time_from_hillsboro_min": 25,
+      "why": "Tiny museum of oddities — alien autopsies, cryptid displays, Bigfoot photo ops, a sasquatch ice-cream parlor. Wear a costume, get in free. Hailey and Logan will both find this entertainingly weird.",
+      "weather_rationale": "Indoor — perfect any day, especially the rainy Sunday/Monday window.",
+      "source_url": "https://peculiarium.com/pages/visit",
+      "image_hint": "Freakybuttrue Peculiarium Portland storefront oddities Bigfoot alien autopsy display",
+      "image_url": null
+    },
+    {
+      "id": "mill-ends-leprechaun-park",
+      "title": "Mill Ends Park — the leprechaun colony",
+      "category": "hidden-gems",
+      "audience_tags": [
+        "family",
+        "kid-friendly"
+      ],
+      "when": "Anytime — 2-foot circle on a Naito Parkway median",
+      "where": "SW Naito Pkwy & SW Taylor St, Portland",
+      "drive_time_from_hillsboro_min": 25,
+      "why": "Used to be the smallest park in the world per Guinness — 452 square inches. The only leprechaun colony west of Ireland. Five-minute stop, but it pairs perfectly with Saturday Market a block away.",
+      "weather_rationale": "Outdoor but it's a 5-minute detour — works in any weather.",
+      "source_url": "https://www.atlasobscura.com/places/mill-ends-park",
+      "image_hint": "Mill Ends Park Portland tiny circular park median Naito Parkway single tree miniature features",
+      "image_url": null
+    },
+    {
+      "id": "omsi-titanic-exhibit",
+      "title": "OMSI — Titanic: The Artifact Exhibition",
+      "category": "indoor-historical",
+      "audience_tags": [
+        "family",
+        "kid-friendly",
+        "teens"
+      ],
+      "when": "Daily through May 31, regular OMSI hours",
+      "where": "OMSI, 1945 SE Water Ave, Portland",
+      "drive_time_from_hillsboro_min": 30,
+      "why": "100+ authentic artifacts recovered from the wreck site — china, jewelry, personal items. Final week of the run. Pair with the planetarium or the USS Blueback submarine tour. Strong rainy-Monday option.",
+      "weather_rationale": "Indoor — purpose-built for the wet Monday forecast.",
+      "source_url": "https://omsi.edu/whats-on/",
+      "image_hint": "OMSI Titanic artifact exhibition recovered objects ship wreck museum gallery",
+      "image_url": null
+    },
+    {
+      "id": "oregon-garden-art-opening",
+      "title": "Oregon Garden — 'Art in the Garden' Opening Day",
+      "category": "south-valley",
+      "audience_tags": [
+        "family",
+        "outdoors",
+        "date-night",
+        "kid-friendly"
+      ],
+      "when": "Saturday May 23, opening day (runs through Sept 3)",
+      "where": "879 W Main St, Silverton",
+      "drive_time_from_hillsboro_min": 75,
+      "why": "80 acres of specialty gardens with a brand-new summer-long outdoor art installation kicking off Saturday. Local artists' handcrafted work scattered through the grounds. No upcharge over garden admission.",
+      "weather_rationale": "Sunny mid-70s in the valley — peak garden weather.",
+      "source_url": "https://oregongarden.org/upcoming-events/",
+      "image_hint": "Oregon Garden Silverton botanical paths flowering rhododendrons summer art sculpture installation",
+      "image_url": "/static/img/oregon-garden.png"
+    },
+    {
+      "id": "salem-bushs-pasture",
+      "title": "Bush's Pasture Park + Deepwood Museum",
+      "category": "south-valley",
+      "audience_tags": [
+        "family",
+        "date-night"
+      ],
+      "when": "Saturday or Sunday afternoon",
+      "where": "Bush's Pasture Park, 600 Mission St SE, Salem",
+      "drive_time_from_hillsboro_min": 65,
+      "why": "Historic 90-acre park with one of Oregon's best rose collections (likely peak bloom), a Victorian mansion museum (Bush House), and the Deepwood Museum's English-style gardens next door. Salem's quiet weekend gem.",
+      "weather_rationale": "Sunny in Salem Sat–Sun — outdoor garden weather.",
+      "source_url": "https://www.travelsalem.com/listings/bush-house-museum-and-bushs-pasture-park/",
+      "image_hint": "Bush's Pasture Park Salem Oregon rose garden Victorian mansion historic walkway",
+      "image_url": "/static/img/salem-bushs-pasture.png"
+    },
+    {
+      "id": "aladdin-reb-and-good-news",
+      "title": "Reb & the Good News with The Weather Machine",
+      "category": "concerts",
+      "audience_tags": [
+        "date-night",
+        "adults-only"
+      ],
+      "when": "Saturday May 23 — doors 7pm, show 8pm",
+      "where": "Aladdin Theater, 3017 SE Milwaukie Ave, Portland",
+      "drive_time_from_hillsboro_min": 30,
+      "why": "Portland Americana / rock outfit fronted by Reb (of Blitzen Trapper). The Weather Machine opens — folk-rock with horns. Small, listening-room vibe at the Aladdin. Date-night-shaped.",
+      "weather_rationale": "Indoor venue — doesn't matter.",
+      "source_url": "https://www.aladdin-theater.com/",
+      "image_hint": "Aladdin Theater Portland marquee historic SE Milwaukie band stage lights crowd",
+      "image_url": null
+    },
+    {
+      "id": "stars-antique-mall-sellwood",
+      "title": "Sellwood Antique Row crawl",
+      "category": "indoor-historical",
+      "audience_tags": [
+        "family",
+        "date-night"
+      ],
+      "when": "Saturday or Sunday afternoon — most shops 10am–6pm",
+      "where": "SE 13th Ave between Tacoma and Bidwell, Portland",
+      "drive_time_from_hillsboro_min": 35,
+      "why": "Two dozen antique shops along a few walkable blocks, plus the two Stars Antique Malls across the street from each other on Milwaukie Ave. Wander, hunt, then grab lunch at Jade Bistro or a beer at Gigantic. Indoor backup for rain.",
+      "weather_rationale": "Mostly indoor — works whether it's sunny Saturday or rainy Monday.",
+      "source_url": "https://sellwoodmoreland.com/businesses/stars-antiques-malls",
+      "image_hint": "Sellwood Antique Row Portland storefront vintage signs displays mid-century furniture",
+      "image_url": null
+    }
+  ],
+  "coverage_gaps": []
+}
