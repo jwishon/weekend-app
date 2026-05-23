@@ -24,6 +24,7 @@ from __future__ import annotations
 import json
 import logging
 import os
+import re
 import sqlite3
 from datetime import date, datetime, timedelta
 from pathlib import Path
@@ -260,6 +261,12 @@ def _normalize_week_data(week_data: dict) -> dict:
     for item in items_raw:
         if not isinstance(item, dict):
             continue
+        # Generate slug-style id from title if Claude didn't provide one. Page rendering,
+        # voting, and run logs all assume id exists.
+        if not item.get("id"):
+            base = (item.get("title") or "item").lower()
+            slug = re.sub(r'[^a-z0-9]+', '-', base).strip('-')[:60]
+            item["id"] = slug or "item"
         if "where" not in item and "location" in item:
             item["where"] = item["location"]
         if "why" not in item:
@@ -308,7 +315,7 @@ def _write_run_log(weekend_dates: list[str], stats: dict, usage: dict, errors: l
 - Stop reason: {usage.get('stop_reason', '?')}
 
 ## Quarantine
-{chr(10).join(f"- **{q['id']}** — {q['_verify_reason']}" for q in stats.get('quarantine_list', [])) or '(none)'}
+{chr(10).join(f"- **{q.get('id', '(no-id)')}** — {q.get('_verify_reason', '(no reason)')}" for q in stats.get('quarantine_list', [])) or '(none)'}
 
 ## Errors
 {chr(10).join(f"- {e}" for e in errors) or '(none)'}
