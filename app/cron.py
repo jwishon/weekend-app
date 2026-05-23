@@ -319,6 +319,13 @@ def run() -> dict:
     stats["quarantined"] = len(quarantined)
     stats["quarantine_list"] = quarantined
 
+    # ALWAYS persist diagnostics — draft (raw week_data) + quarantine list — even on rejection.
+    # Without this, debugging a 0-items-passed run is impossible.
+    draft_path = DATA_DIR / f"draft-{weekend_dates[0]}.json"
+    draft_path.write_text(json.dumps(week_data, indent=2, ensure_ascii=False), encoding="utf-8")
+    quar_path = DATA_DIR / f"quarantine-{weekend_dates[0]}.json"
+    quar_path.write_text(json.dumps({"items": quarantined}, indent=2, ensure_ascii=False), encoding="utf-8")
+
     if len(passed) >= MIN_ITEMS_TO_PUBLISH:
         # Generate AI images for everything that passed verification + any
         # featured venue events that came back populated. Non-fatal: items
@@ -334,14 +341,11 @@ def run() -> dict:
         week_data["items"] = passed
         out_path = DATA_DIR / f"week-{weekend_dates[0]}.json"
         out_path.write_text(json.dumps(week_data, indent=2, ensure_ascii=False), encoding="utf-8")
-        # Quarantine record for debugging
-        quar_path = DATA_DIR / f"quarantine-{weekend_dates[0]}.json"
-        quar_path.write_text(json.dumps({"items": quarantined}, indent=2, ensure_ascii=False), encoding="utf-8")
         stats["published"] = True
         _set_status("ok", f"{stats['passed']} items published, {stats['quarantined']} quarantined")
         log.info("Published %s items to %s", stats["passed"], out_path)
     else:
-        msg = f"only {len(passed)} items passed verification (need {MIN_ITEMS_TO_PUBLISH}); leaving prior week live"
+        msg = f"generated {stats['generated']}, only {len(passed)} passed verification (need {MIN_ITEMS_TO_PUBLISH}); leaving prior week live"
         errors.append(msg)
         _set_status("rejected", msg)
         log.warning(msg)

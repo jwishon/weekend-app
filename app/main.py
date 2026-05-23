@@ -219,6 +219,34 @@ def get_api_last_run() -> JSONResponse:
         return JSONResponse({"recent_runs": [], "error": str(e)})
 
 
+@app.get("/api/draft")
+def get_api_draft() -> JSONResponse:
+    """Return the most recent draft file (the raw week_data from the latest cron run,
+    before the publish gate). Use to see what Claude generated when a run was rejected."""
+    var_data = Path("/app/var/data")
+    if not var_data.exists():
+        return JSONResponse({"error": "no var/data dir"}, status_code=404)
+    drafts = sorted(var_data.glob("draft-*.json"), reverse=True)
+    if not drafts:
+        return JSONResponse({"error": "no draft files yet"}, status_code=404)
+    with drafts[0].open("r", encoding="utf-8") as f:
+        return JSONResponse({"file": drafts[0].name, "data": json.load(f)})
+
+
+@app.get("/api/quarantine")
+def get_api_quarantine() -> JSONResponse:
+    """Return the most recent quarantine file — items that were rejected by the verifier,
+    each with a _verify_reason explaining why. Critical for prompt/verifier tuning."""
+    var_data = Path("/app/var/data")
+    if not var_data.exists():
+        return JSONResponse({"error": "no var/data dir"}, status_code=404)
+    quars = sorted(var_data.glob("quarantine-*.json"), reverse=True)
+    if not quars:
+        return JSONResponse({"error": "no quarantine files yet"}, status_code=404)
+    with quars[0].open("r", encoding="utf-8") as f:
+        return JSONResponse({"file": quars[0].name, "data": json.load(f)})
+
+
 def _state_for_item(item_id: str) -> dict:
     """Return a single item's current state — used as the response for write endpoints
     so the client can update without a separate GET."""
