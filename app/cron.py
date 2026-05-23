@@ -210,13 +210,23 @@ def _normalize_week_data(week_data: dict) -> dict:
     if "items" not in week_data and "curated_items" in week_data:
         week_data["items"] = week_data["curated_items"]
 
-    # featured_venues + venue_scan_log: split a single venue_scan array by status
+    # featured_venues + venue_scan_log: split a single venue_scan into both. Claude
+    # sometimes returns venue_scan as a list, sometimes as a dict keyed by venue slug.
     if "featured_venues" not in week_data and "venue_scan" in week_data:
+        vs_raw = week_data.get("venue_scan")
+        if isinstance(vs_raw, dict):
+            vs_list = list(vs_raw.values())
+        elif isinstance(vs_raw, list):
+            vs_list = vs_raw
+        else:
+            vs_list = []
         featured, scan_log = [], []
-        for v in week_data.get("venue_scan", []) or []:
+        for v in vs_list:
+            if not isinstance(v, dict):
+                continue
             status = v.get("status") or v.get("state") or "no_event"
             event = v.get("event") or None
-            if status == "has_event" and event:
+            if status == "has_event" and isinstance(event, dict):
                 featured.append({
                     "id": (v.get("venue") or "venue").lower().replace(" ", "-"),
                     "name": v.get("venue") or "",
@@ -243,7 +253,13 @@ def _normalize_week_data(week_data: dict) -> dict:
         week_data["venue_scan_log"] = scan_log
 
     # Per-item field name normalization
-    for item in week_data.get("items", []) or []:
+    items_raw = week_data.get("items", []) or []
+    if not isinstance(items_raw, list):
+        items_raw = []
+        week_data["items"] = []
+    for item in items_raw:
+        if not isinstance(item, dict):
+            continue
         if "where" not in item and "location" in item:
             item["where"] = item["location"]
         if "why" not in item:
