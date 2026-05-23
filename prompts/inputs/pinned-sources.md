@@ -5,41 +5,31 @@ The Wednesday research job hits these every run, on top of open web search.
 ## Local events / calendars
 
 - Portland Saturday Market — saturdaymarket.org
-- Oregon Convention Center — oregoncc.org/events
-- Portland Expo Center — expocenter.org/events
+- Oregon Convention Center — oregoncc.org/attend/events
+- Portland Expo Center — expocenter.org/calendar
+- Westside Commons (Hillsboro) — westsidecommons.com/events
 - Travel Portland — travelportland.com (events calendar)
 - Willamette Week — wweek.com (events section)
+- Portland Mercury — portlandmercury.com/events
 - Visit Hillsboro / Tualatin Valley — tualatinvalley.org
 
-## Coast
+## Museums, gardens, historic venues (venue scan)
 
-- Visit Tillamook Coast — tillamookcoast.com/events
-- Cannon Beach Chamber — cannonbeach.org/events
-- Manzanita / Nehalem / Wheeler — exploremanzanita.com
+These get scanned every Wednesday alongside Expo Center / OCC. Notable events get surfaced as featured venue cards or in `indoor-historical`.
 
-## Gorge / Hood
+- Portland Art Museum — portlandartmuseum.org/exhibitions
+- OMSI — omsi.edu/visit
+- Lan Su Chinese Garden — lansugarden.org/events
+- Portland Japanese Garden — japanesegarden.org/events
+- Pittock Mansion — pittockmansion.org/events
+- Oregon Historical Society — ohs.org/events
+- Hoyt Arboretum — hoytarboretum.org/events
 
-- Visit Hood River — visithoodriver.com/events
-- Columbia Gorge Tourism — crgva.org
-- Mt. Hood Territory — mthoodterritory.com/events
-- Multnomah Falls / USFS trail conditions
+## Farmers markets, art markets, antique markets, pop-ups
 
-## South valley (Newberg → Eugene corridor)
-
-- Visit McMinnville — visitmcminnville.com/events
-- Travel Salem — travelsalem.com/events
-- Newberg Chamber events
-- Visit Corvallis — visitcorvallis.com/events
-- Eugene Cascades & Coast — eugenecascadescoast.org/events
-- Oregon State Fair (Salem) — seasonal but worth checking
-
-## Wineries
-
-- Willamette Valley Wineries Association — willamettewines.com (events)
-- Yamhill-Carlton wine region calendars
-- Chehalem Mountains AVA event listings
-- McMinnville wine country event listings
-
-## McMenamins (always check — household favorite)
-
-The McMenamins master events page lists everything across all venues. **
+- Portland Farmers Market network — portlandfarmersmarket.org (PSU, Hillsdale, King, Lents, Kenton)
+- Hillsboro Farmers Markets — hillsboromarkets.org
+- Beaverton Farmers Market — beavertonfarmersmarket.com
+- Hollywood Farmers Market — hollywoodfarmersmarket.org
+- Sellwood Antique Row — sellwoodantiquerow.com
+- Monticello

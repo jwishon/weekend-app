@@ -71,11 +71,64 @@ def upcoming_weekend(today: date | None = None) -> list[str]:
     return [(fri + timedelta(days=i)).isoformat() for i in range(3)]
 
 
+def _calendar_context(weekend_dates: list[str]) -> str:
+    """One-paragraph description of any holiday or cultural theme for the weekend.
+
+    The window scanned is Fri–Mon so observed-on-Monday holidays (Memorial Day,
+    Labor Day) trigger correctly even though weekend_dates is Fri–Sun. Returns
+    "Regular weekend." when nothing special matches.
+    """
+    if not weekend_dates:
+        return "Regular weekend."
+    try:
+        fri = datetime.strptime(weekend_dates[0], "%Y-%m-%d").date()
+    except ValueError:
+        return "Regular weekend."
+    window = [fri + timedelta(days=i) for i in range(4)]  # Fri..Mon
+
+    for d in window:
+        # Memorial Day — last Monday of May
+        if d.month == 5 and d.weekday() == 0 and d.day >= 25:
+            return (f"Memorial Day weekend (May {d.day} observed). 3-day federal holiday. "
+                    "Themes: veterans, military tributes, flag ceremonies (Willamette National Cemetery in Happy Valley), "
+                    "start-of-summer outdoor push, Willamette Valley Memorial Day winery open house weekend, "
+                    "parades, patriotic music, cemetery events.")
+        # Independence Day
+        if d.month == 7 and d.day == 4:
+            return ("Independence Day weekend. Themes: fireworks shows (Waterfront Blues Festival, "
+                    "Oaks Park, Fort Vancouver), parades, patriotic events, outdoor festivals, BBQ, "
+                    "summer fairs.")
+        # Labor Day — first Monday of September
+        if d.month == 9 and d.weekday() == 0 and d.day <= 7:
+            return ("Labor Day weekend. 3-day federal holiday. Themes: end-of-summer outdoor push, "
+                    "fall festivals starting, last big beach weekends, last winery weekend before harvest, "
+                    "Pendleton Round-Up vibes (statewide).")
+        # Veterans Day
+        if d.month == 11 and d.day == 11:
+            return ("Veterans Day. Themes: military tributes, ceremonies at Willamette National Cemetery, "
+                    "free admission for veterans at many museums and attractions, parades.")
+        # Thanksgiving — 4th Thursday of November
+        if d.month == 11 and d.weekday() == 3 and 22 <= d.day <= 28:
+            return ("Thanksgiving weekend. 4-day federal holiday. Themes: holiday markets, "
+                    "tree-lighting kickoffs (Pioneer Courthouse Square, Pittock Mansion), Zoo Lights, "
+                    "Black Friday events, indoor family activities for cold weather.")
+        # Christmas weekend
+        if d.month == 12 and 24 <= d.day <= 26:
+            return ("Christmas weekend. Themes: holiday lights (Zoo Lights, Peacock Lane, Winter Wonderland PIR), "
+                    "Christmas markets, Pittock Mansion holiday tours, Holiday Express train at OERHS, "
+                    "tree lighting events, family indoor activities.")
+        # New Year's
+        if d.month == 12 and d.day == 31:
+            return ("New Year's Eve weekend. Themes: NYE parties, midnight fireworks at the waterfront, "
+                    "First Run resolutions runs, family-friendly noon countdowns.")
+    return "Regular weekend."
+
+
 def _load_text(path: Path) -> str:
     return path.read_text(encoding="utf-8")
 
 
-def _build_prompt(today_iso: str, weekend_dates: list[str], weather_summary: dict, recent_thumbs: dict) -> str:
+def _build_prompt(today_iso: str, weekend_dates: list[str], weather_summary: dict, recent_thumbs: dict, calendar_context: str) -> str:
     template = _load_text(PROMPT_PATH)
     # Strip the human header sections — only send the actual prompt body
     # (everything from '---' onward in the file)
@@ -91,6 +144,7 @@ def _build_prompt(today_iso: str, weekend_dates: list[str], weather_summary: dic
         .replace("{{TODAY}}", today_iso)
         .replace("{{WEEKEND_DATES}}", " / ".join(weekend_dates))
         .replace("{{WEATHER_FORECAST}}", json.dumps(weather_summary, indent=2))
+        .replace("{{CALENDAR_CONTEXT}}", calendar_context)
         .replace("{{SEED_LIKES}}", seed_likes)
         .replace("{{PINNED_SOURCES}}", pinned_sources)
         .replace("{{FAMILY_PROFILE}}", family_profile)
@@ -216,8 +270,11 @@ def run() -> dict:
         recent_thumbs = {}
         errors.append(f"thumbs: {e}")
 
+    calendar_context = _calendar_context(weekend_dates)
+    log.info("Calendar context: %s", calendar_context[:120])
+
     try:
-        prompt = _build_prompt(today_iso, weekend_dates, weather_summary, recent_thumbs)
+        prompt = _build_prompt(today_iso, weekend_dates, weather_summary, recent_thumbs, calendar_context)
     except Exception as e:
         errors.append(f"prompt assembly: {e}")
         _set_status("error", "; ".join(errors))
