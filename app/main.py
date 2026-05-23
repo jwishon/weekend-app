@@ -46,6 +46,12 @@ CATEGORY_ORDER = [
 
 app = FastAPI(title="Weekend", docs_url=None, redoc_url=None)
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
+# Cron-generated images live on the persistent volume. Mount /img/ → /app/var/data/img/
+# so item.image_url paths like "/img/<id>.png" resolve. Directory may not exist
+# until the first cron run; FastAPI requires it at startup so we create it.
+_CRON_IMG_DIR = Path("/app/var/data/img")
+_CRON_IMG_DIR.mkdir(parents=True, exist_ok=True)
+app.mount("/img", StaticFiles(directory=_CRON_IMG_DIR), name="cron-img")
 templates = Jinja2Templates(directory=TEMPLATES_DIR)
 
 

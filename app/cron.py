@@ -31,7 +31,7 @@ from zoneinfo import ZoneInfo
 
 from anthropic import Anthropic
 
-from app import db, verify, weather
+from app import db, images, verify, weather
 
 log = logging.getLogger("weekend.cron")
 
@@ -41,7 +41,6 @@ INPUTS_DIR = REPO_ROOT / "prompts" / "inputs"
 # In-image directory has the sample-week.json fallback. Cron output goes to
 # /app/var/data/ which is bind-mounted to QNAP and survives container restarts.
 DATA_DIR = Path("/app/var/data")
-DATA_DIR.mkdir(parents=True, exist_ok=True)
 LOG_DIR = Path("/app/var/logs")
 
 MIN_ITEMS_TO_PUBLISH = 6  # below this, keep prior week live
@@ -53,13 +52,22 @@ PACIFIC = ZoneInfo("America/Los_Angeles")
 
 
 def upcoming_weekend(today: date | None = None) -> list[str]:
-    """Return [Fri, Sat, Sun] of the weekend immediately following 'today'."""
+    """Return [Fri, Sat, Sun] of the weekend we should be planning for.
+
+    Rule:
+    - Monday/Tuesday/Wednesday → the immediately upcoming weekend (this Fri/Sat/Sun)
+    - Thursday/Friday/Saturday/Sunday → the current weekend window (the Fri/Sat/Sun
+      that contains today, or the most recent past Friday for Thu)
+
+    This way the scheduled Wednesday 7am cron correctly fetches the weekend 2 days
+    out, AND a manual mid-weekend test fetches the weekend we're actually in.
+    """
     today = today or datetime.now(PACIFIC).date()
-    # Monday=0, Friday=4
-    days_until_fri = (4 - today.weekday()) % 7
-    if days_until_fri == 0 and today.weekday() != 4:
-        days_until_fri = 7
-    fri = today + timedelta(days=days_until_fri)
+    # Friday offset: positive when Friday is upcoming, zero on Friday, negative when
+    # we're mid-weekend or just past it. Mon=4d, Tue=3d, Wed=2d (canonical cron),
+    # Thu=1d, Fri=0d, Sat=-1d, Sun=-2d.
+    days_to_fri = 4 - today.weekday()
+    fri = today + timedelta(days=days_to_fri)
     return [(fri + timedelta(days=i)).isoformat() for i in range(3)]
 
 
@@ -178,6 +186,8 @@ def _set_status(status: str, note: str = "") -> None:
 
 def run() -> dict:
     """Execute one cron pipeline. Returns a summary dict."""
+    DATA_DIR.mkdir(parents=True, exist_ok=True)
+    LOG_DIR.mkdir(parents=True, exist_ok=True)
     errors: list[str] = []
     stats: dict = {"published": False, "generated": 0, "passed": 0, "quarantined": 0, "quarantine_list": []}
     usage: dict = {}
@@ -247,6 +257,14 @@ def run() -> dict:
     stats["quarantine_list"] = quarantined
 
     if len(passed) >= MIN_ITEMS_TO_PUBLISH:
+        # Generate per-item images via kie.ai for everything that passed verification.
+        # Failures are non-fatal — items just go out without image_url and the
+        # template falls back to a gradient placeholder.
+        try:
+            images.generate_for_items(passed)
+        except Exception as e:
+            log.exception("image generation step crashed")
+            errors.append(f"image generation: {e}")
         week_data["items"] = passed
         out_path = DATA_DIR / f"week-{weekend_dates[0]}.json"
         out_path.write_text(json.dumps(week_data, indent=2, ensure_ascii=False), encoding="utf-8")
