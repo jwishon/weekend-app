@@ -20,7 +20,7 @@ from typing import Iterator
 
 DB_PATH = Path("/app/var/weekend.db")
 
-VALID_VOTERS = {"John", "Tonia", "Logan", "Hailey"}
+VALID_VOTERS = {"John", "Tonia", "Logan", "Hailey", "Faith"}
 VALID_DIRECTIONS = {"up", "down"}
 
 

@@ -160,15 +160,22 @@
     <div id="itemsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
       {% for item in items %}
       <article class="item-card bg-white rounded-2xl shadow-sm hover:shadow-md transition overflow-hidden flex flex-col" data-item-id="{{ item.id }}">
-        {% if item.image_url %}
-        <div class="aspect-video bg-slate-100 overflow-hidden">
-          <img src="{{ item.image_url }}" alt="{{ item.title }}" loading="lazy" class="w-full h-full object-cover" />
+        <div class="relative">
+          {% if item.image_url %}
+          <div class="aspect-video bg-slate-100 overflow-hidden">
+            <img src="{{ item.image_url }}" alt="{{ item.title }}" loading="lazy" class="w-full h-full object-cover" />
+          </div>
+          {% else %}
+          <div class="aspect-video bg-gradient-to-br from-slate-200 to-slate-400 flex items-center justify-center">
+            <span class="text-white text-sm font-semibold uppercase tracking-wider">{{ item.category.replace('-', ' ') }}</span>
+          </div>
+          {% endif %}
+          <!-- Star overlay, top-right of image. Separated from thumbs to prevent fat-finger conflicts. -->
+          <button type="button" data-act="star" data-item-id="{{ item.id }}" aria-label="Shortlist {{ item.title }}"
+            class="star-btn absolute top-2 right-2 w-10 h-10 rounded-full bg-slate-900/55 backdrop-blur-sm flex items-center justify-center text-white hover:bg-slate-900/75 active:scale-95 transition shadow-lg">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26"/></svg>
+          </button>
         </div>
-        {% else %}
-        <div class="aspect-video bg-gradient-to-br from-slate-200 to-slate-400 flex items-center justify-center">
-          <span class="text-white text-sm font-semibold uppercase tracking-wider">{{ item.category.replace('-', ' ') }}</span>
-        </div>
-        {% endif %}
         <div class="p-4 sm:p-5 flex flex-col flex-1 gap-3">
           <div class="flex items-center justify-between gap-2">
             <div class="text-xs font-semibold uppercase tracking-wide text-slate-500">{{ item.category.replace('-', ' ') }}</div>
@@ -196,10 +203,6 @@
           {% endif %}
           <div class="mt-auto pt-3 border-t border-slate-100 flex items-center justify-between">
             <div class="flex items-center gap-1">
-              <!-- Star -->
-              <button type="button" data-act="star" data-item-id="{{ item.id }}" aria-label="Shortlist {{ item.title }}" class="star-btn p-2.5 rounded-lg hover:bg-amber-50 active:bg-amber-100 transition text-slate-400 hover:text-amber-500">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26"/></svg>
-              </button>
               <!-- Thumbs up -->
               <button type="button" data-act="up" data-item-id="{{ item.id }}" aria-label="Like {{ item.title }}" class="vote-btn p-2.5 rounded-lg hover:bg-green-50 active:bg-green-100 transition text-slate-400 hover:text-green-600">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 10v12"/><path d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H7a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L15 2a2 2 0 1 1 4 2.66Z"/></svg>
@@ -272,13 +275,14 @@
       } else {
         badge.classList.add('hidden');
       }
-      // My star highlight
+      // My star highlight — overlay turns bright amber when I've starred it
       const starBtn = card.querySelector('.star-btn');
-      if (me && st.stars && st.stars.includes(me)) {
-        starBtn.classList.add('text-amber-500', 'bg-amber-50');
-      } else {
-        starBtn.classList.remove('text-amber-500', 'bg-amber-50');
-      }
+      const myStar = (me && st.stars && st.stars.includes(me));
+      starBtn.classList.toggle('bg-amber-400', myStar);
+      starBtn.classList.toggle('hover:bg-amber-500', myStar);
+      starBtn.classList.toggle('text-white', true);
+      starBtn.classList.toggle('bg-slate-900/55', !myStar);
+      starBtn.classList.toggle('hover:bg-slate-900/75', !myStar);
       // My vote highlight
       card.querySelectorAll('.vote-btn').forEach(b => b.classList.remove('text-green-600', 'text-red-600', 'bg-green-50', 'bg-red-50'));
       if (me && st.votes_by && st.votes_by[me]) {
