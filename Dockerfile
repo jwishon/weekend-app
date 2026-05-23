@@ -12,6 +12,11 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
+# Persistent volume for SQLite (votes + stars). Mounted from /mnt/qnap-config/weekend
+# on the host. App initializes /app/var/weekend.db at startup.
+RUN mkdir -p /app/var
+VOLUME /app/var
+
 EXPOSE 8000
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \

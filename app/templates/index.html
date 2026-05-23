@@ -4,18 +4,14 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#0f172a" />
-  <title>Weekend — Wishon Household</title>
+  <title>Our Weekend — OTC Lifestyle</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <script>
     tailwind.config = {
-      theme: {
-        extend: {
-          fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
-        }
-      }
+      theme: { extend: { fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] } } }
     }
   </script>
   <link rel="stylesheet" href="/static/styles.css" />
@@ -24,7 +20,7 @@
 </head>
 <body class="bg-slate-50 text-slate-900 font-sans antialiased min-h-screen">
 
-  <!-- Hero banner — scrolls off, sticky header below kicks in -->
+  <!-- Hero banner -->
   <section class="relative w-full h-44 sm:h-64 lg:h-80 overflow-hidden">
     <img src="/static/img/hero-northwest.png" alt="Pacific Northwest landscape" class="absolute inset-0 w-full h-full object-cover" />
     <div class="absolute inset-0 bg-gradient-to-t from-slate-900/70 via-slate-900/30 to-slate-900/20"></div>
@@ -45,9 +41,21 @@
           </p>
           {% endif %}
         </div>
-        <div class="text-right text-xs sm:text-sm text-slate-500 leading-tight">
-          <div class="hidden sm:block">OTC Lifestyle</div>
-          <div class="font-medium text-slate-700">#OneLifeLiveIt</div>
+        <div class="flex items-center gap-3">
+          <!-- Voter picker -->
+          <div class="flex items-center gap-2">
+            <label for="voterSelect" class="hidden sm:block text-xs text-slate-500 font-medium">Browsing as</label>
+            <select id="voterSelect" class="text-xs sm:text-sm border border-slate-200 rounded-lg px-2 py-1.5 bg-white text-slate-700 font-medium focus:outline-none focus:ring-2 focus:ring-blue-300">
+              <option value="">Pick a name…</option>
+              {% for v in voters %}
+              <option value="{{ v }}">{{ v }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="hidden md:block text-right text-xs sm:text-sm text-slate-500 leading-tight">
+            <div>OTC Lifestyle</div>
+            <div class="font-medium text-slate-700">#OneLifeLiveIt</div>
+          </div>
         </div>
       </div>
     </div>
@@ -71,6 +79,11 @@
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
         <div class="flex gap-2 whitespace-nowrap">
           <a href="/" class="px-3 py-1.5 rounded-full text-sm font-medium transition {% if active_category == 'all' %}bg-slate-900 text-white{% else %}bg-slate-100 text-slate-700 hover:bg-slate-200{% endif %}">All</a>
+          <button id="shortlistPill" type="button" class="px-3 py-1.5 rounded-full text-sm font-medium transition bg-amber-100 text-amber-800 hover:bg-amber-200 inline-flex items-center gap-1">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26"/></svg>
+            <span>Shortlist</span>
+            <span id="shortlistCount" class="text-xs opacity-75"></span>
+          </button>
           {% for cat in categories %}
           <a href="/?category={{ cat }}" class="px-3 py-1.5 rounded-full text-sm font-medium transition {% if active_category == cat %}bg-slate-900 text-white{% else %}bg-slate-100 text-slate-700 hover:bg-slate-200{% endif %}">{{ cat.replace('-', ' ').title() }}</a>
           {% endfor %}
@@ -106,10 +119,8 @@
 
           <div class="p-4 sm:p-5 flex flex-col flex-1 gap-3">
             <div class="text-xs font-semibold uppercase tracking-wide text-slate-500">{{ venue.name }}</div>
-
             {% if venue.event %}
             <h3 class="text-lg sm:text-xl font-bold leading-tight text-slate-900">{{ venue.event.title }}</h3>
-
             {% if venue.event.audience_tags %}
             <div class="flex flex-wrap gap-1.5">
               {% for tag in venue.event.audience_tags %}
@@ -117,28 +128,16 @@
               {% endfor %}
             </div>
             {% endif %}
-
             <dl class="text-sm text-slate-600 space-y-1">
-              <div class="flex gap-2">
-                <dt class="font-semibold text-slate-500 w-14 shrink-0">When</dt>
-                <dd>{{ venue.event.when }}</dd>
-              </div>
-              <div class="flex gap-2">
-                <dt class="font-semibold text-slate-500 w-14 shrink-0">Where</dt>
-                <dd>{{ venue.where }}</dd>
-              </div>
-              <div class="flex gap-2">
-                <dt class="font-semibold text-slate-500 w-14 shrink-0">Drive</dt>
-                <dd>{{ venue.drive_time_from_hillsboro_min }} min from Hillsboro</dd>
-              </div>
+              <div class="flex gap-2"><dt class="font-semibold text-slate-500 w-14 shrink-0">When</dt><dd>{{ venue.event.when }}</dd></div>
+              <div class="flex gap-2"><dt class="font-semibold text-slate-500 w-14 shrink-0">Where</dt><dd>{{ venue.where }}</dd></div>
+              <div class="flex gap-2"><dt class="font-semibold text-slate-500 w-14 shrink-0">Drive</dt><dd>{{ venue.drive_time_from_hillsboro_min }} min from Hillsboro</dd></div>
             </dl>
-
             <p class="text-sm text-slate-700 leading-relaxed">{{ venue.event.why }}</p>
             {% else %}
             <h3 class="text-lg sm:text-xl font-bold leading-tight text-slate-500">{{ venue.empty_message or "Nothing this weekend." }}</h3>
             <p class="text-sm text-slate-500 leading-relaxed">Worth a check next Wednesday when the new week drops.</p>
             {% endif %}
-
             <div class="mt-auto pt-3 border-t border-slate-100 flex items-center justify-end">
               {% if venue.source_url %}
               <a href="{{ venue.source_url }}" target="_blank" rel="noopener noreferrer" class="text-xs text-slate-400 hover:text-slate-600 underline">venue calendar</a>
@@ -158,9 +157,9 @@
     </div>
     {% endif %}
 
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+    <div id="itemsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
       {% for item in items %}
-      <article class="bg-white rounded-2xl shadow-sm hover:shadow-md transition overflow-hidden flex flex-col">
+      <article class="item-card bg-white rounded-2xl shadow-sm hover:shadow-md transition overflow-hidden flex flex-col" data-item-id="{{ item.id }}">
         {% if item.image_url %}
         <div class="aspect-video bg-slate-100 overflow-hidden">
           <img src="{{ item.image_url }}" alt="{{ item.title }}" loading="lazy" class="w-full h-full object-cover" />
@@ -170,49 +169,46 @@
           <span class="text-white text-sm font-semibold uppercase tracking-wider">{{ item.category.replace('-', ' ') }}</span>
         </div>
         {% endif %}
-
         <div class="p-4 sm:p-5 flex flex-col flex-1 gap-3">
-          <div class="text-xs font-semibold uppercase tracking-wide text-slate-500">{{ item.category.replace('-', ' ') }}</div>
-
+          <div class="flex items-center justify-between gap-2">
+            <div class="text-xs font-semibold uppercase tracking-wide text-slate-500">{{ item.category.replace('-', ' ') }}</div>
+            <div class="starred-badge hidden text-xs font-medium text-amber-700 inline-flex items-center gap-1">
+              <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26"/></svg>
+              <span class="starred-names"></span>
+            </div>
+          </div>
           <h2 class="text-lg sm:text-xl font-bold leading-tight text-slate-900">{{ item.title }}</h2>
-
           <div class="flex flex-wrap gap-1.5">
             {% for tag in item.audience_tags %}
             <span class="text-xs px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 font-medium">{{ tag }}</span>
             {% endfor %}
           </div>
-
           <dl class="text-sm text-slate-600 space-y-1">
-            <div class="flex gap-2">
-              <dt class="font-semibold text-slate-500 w-14 shrink-0">When</dt>
-              <dd>{{ item.when }}</dd>
-            </div>
-            <div class="flex gap-2">
-              <dt class="font-semibold text-slate-500 w-14 shrink-0">Where</dt>
-              <dd>{{ item.where }}</dd>
-            </div>
-            <div class="flex gap-2">
-              <dt class="font-semibold text-slate-500 w-14 shrink-0">Drive</dt>
-              <dd>{{ item.drive_time_from_hillsboro_min }} min from Hillsboro</dd>
-            </div>
+            <div class="flex gap-2"><dt class="font-semibold text-slate-500 w-14 shrink-0">When</dt><dd>{{ item.when }}</dd></div>
+            <div class="flex gap-2"><dt class="font-semibold text-slate-500 w-14 shrink-0">Where</dt><dd>{{ item.where }}</dd></div>
+            <div class="flex gap-2"><dt class="font-semibold text-slate-500 w-14 shrink-0">Drive</dt><dd>{{ item.drive_time_from_hillsboro_min }} min from Hillsboro</dd></div>
           </dl>
-
           <p class="text-sm text-slate-700 leading-relaxed">{{ item.why }}</p>
-
           {% if item.weather_rationale %}
           <p class="text-xs text-slate-500 italic flex items-start gap-1.5">
-            <span aria-hidden="true">☀️</span>
-            <span>{{ item.weather_rationale }}</span>
+            <span aria-hidden="true">☀️</span><span>{{ item.weather_rationale }}</span>
           </p>
           {% endif %}
-
           <div class="mt-auto pt-3 border-t border-slate-100 flex items-center justify-between">
             <div class="flex items-center gap-1">
-              <button type="button" data-vote="up" data-item-id="{{ item.id }}" aria-label="Like {{ item.title }}" class="p-2.5 rounded-lg hover:bg-green-50 active:bg-green-100 transition text-slate-400 hover:text-green-600">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 10v12"/><path d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H7a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L15 2a2 2 0 1 1 4 2.66Z"/></svg>
+              <!-- Star -->
+              <button type="button" data-act="star" data-item-id="{{ item.id }}" aria-label="Shortlist {{ item.title }}" class="star-btn p-2.5 rounded-lg hover:bg-amber-50 active:bg-amber-100 transition text-slate-400 hover:text-amber-500">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26"/></svg>
               </button>
-              <button type="button" data-vote="down" data-item-id="{{ item.id }}" aria-label="Skip {{ item.title }}" class="p-2.5 rounded-lg hover:bg-red-50 active:bg-red-100 transition text-slate-400 hover:text-red-600">
+              <!-- Thumbs up -->
+              <button type="button" data-act="up" data-item-id="{{ item.id }}" aria-label="Like {{ item.title }}" class="vote-btn p-2.5 rounded-lg hover:bg-green-50 active:bg-green-100 transition text-slate-400 hover:text-green-600">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 10v12"/><path d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H7a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L15 2a2 2 0 1 1 4 2.66Z"/></svg>
+                <span class="vote-count-up ml-1 text-xs"></span>
+              </button>
+              <!-- Thumbs down -->
+              <button type="button" data-act="down" data-item-id="{{ item.id }}" aria-label="Skip {{ item.title }}" class="vote-btn p-2.5 rounded-lg hover:bg-red-50 active:bg-red-100 transition text-slate-400 hover:text-red-600">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 14V2"/><path d="M9 18.12 10 14H4.17a2 2 0 0 1-1.92-2.56l2.33-8A2 2 0 0 1 6.5 2H17a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2.76a2 2 0 0 0-1.79 1.11L9 22a2 2 0 1 1-4-2.66Z"/></svg>
+                <span class="vote-count-down ml-1 text-xs"></span>
               </button>
             </div>
             {% if item.source_url %}
@@ -230,20 +226,139 @@
   </footer>
 
   <script>
-    // Phase 1: thumbs are purely client-side / presentational.
-    // Phase 2 will wire POST /vote with optimistic UI.
-    document.querySelectorAll('[data-vote]').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const current = btn.getAttribute('data-voted');
-        const next = btn.dataset.vote;
-        // Clear sibling
-        btn.parentElement.querySelectorAll('[data-vote]').forEach(b => b.removeAttribute('data-voted'));
-        // Toggle self
-        if (current !== next) {
-          btn.setAttribute('data-voted', next);
-        }
+    // ---- Voter picker (persisted per device in localStorage) ----
+    const VOTER_KEY = 'weekend_voter_tag';
+    const voterSel = document.getElementById('voterSelect');
+    voterSel.value = localStorage.getItem(VOTER_KEY) || '';
+    voterSel.addEventListener('change', () => {
+      if (voterSel.value) localStorage.setItem(VOTER_KEY, voterSel.value);
+      else localStorage.removeItem(VOTER_KEY);
+      applyVoterToUI();
+    });
+    function currentVoter() { return localStorage.getItem(VOTER_KEY) || ''; }
+    function requireVoter() {
+      const v = currentVoter();
+      if (!v) {
+        voterSel.focus();
+        voterSel.classList.add('ring-2', 'ring-amber-400');
+        setTimeout(() => voterSel.classList.remove('ring-2', 'ring-amber-400'), 1500);
+      }
+      return v;
+    }
+
+    // ---- Hydrate state from /api/state on load ----
+    let LATEST_STATE = {};
+    async function hydrate() {
+      try {
+        const r = await fetch('/api/state', { cache: 'no-store' });
+        const j = await r.json();
+        LATEST_STATE = j.items || {};
+        document.querySelectorAll('.item-card').forEach(card => applyStateToCard(card, LATEST_STATE[card.dataset.itemId]));
+        updateShortlistCount();
+      } catch (e) { console.warn('hydrate failed', e); }
+    }
+    function applyStateToCard(card, st) {
+      st = st || { up: 0, down: 0, stars: [], votes_by: {} };
+      const me = currentVoter();
+      // Counts
+      card.querySelector('.vote-count-up').textContent = st.up || '';
+      card.querySelector('.vote-count-down').textContent = st.down || '';
+      // Star badge
+      const badge = card.querySelector('.starred-badge');
+      const names = card.querySelector('.starred-names');
+      if (st.stars && st.stars.length) {
+        badge.classList.remove('hidden');
+        names.textContent = 'Starred by ' + st.stars.join(', ');
+      } else {
+        badge.classList.add('hidden');
+      }
+      // My star highlight
+      const starBtn = card.querySelector('.star-btn');
+      if (me && st.stars && st.stars.includes(me)) {
+        starBtn.classList.add('text-amber-500', 'bg-amber-50');
+      } else {
+        starBtn.classList.remove('text-amber-500', 'bg-amber-50');
+      }
+      // My vote highlight
+      card.querySelectorAll('.vote-btn').forEach(b => b.classList.remove('text-green-600', 'text-red-600', 'bg-green-50', 'bg-red-50'));
+      if (me && st.votes_by && st.votes_by[me]) {
+        const dir = st.votes_by[me];
+        const btn = card.querySelector(`[data-act="${dir}"]`);
+        if (btn) btn.classList.add(dir === 'up' ? 'text-green-600' : 'text-red-600', dir === 'up' ? 'bg-green-50' : 'bg-red-50');
+      }
+    }
+    function applyVoterToUI() {
+      document.querySelectorAll('.item-card').forEach(card => applyStateToCard(card, LATEST_STATE[card.dataset.itemId]));
+    }
+
+    // ---- Click handlers ----
+    document.querySelectorAll('[data-act]').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const voter = requireVoter();
+        if (!voter) return;
+        const act = btn.dataset.act;
+        const itemId = btn.dataset.itemId;
+        const card = btn.closest('.item-card');
+        try {
+          let resp;
+          if (act === 'star') {
+            // Toggle: if I've starred, unstar; otherwise star.
+            const st = LATEST_STATE[itemId] || { stars: [] };
+            const haveStarred = (st.stars || []).includes(voter);
+            resp = await fetch('/star', {
+              method: haveStarred ? 'DELETE' : 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ item_id: itemId, voter_tag: voter }),
+            });
+          } else if (act === 'up' || act === 'down') {
+            const st = LATEST_STATE[itemId] || { votes_by: {} };
+            const myCurrent = (st.votes_by || {})[voter];
+            // Toggle: if already voted this direction, clear it
+            const direction = (myCurrent === act) ? 'clear' : act;
+            resp = await fetch('/vote', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ item_id: itemId, direction, voter_tag: voter }),
+            });
+          }
+          if (resp && resp.ok) {
+            const j = await resp.json();
+            LATEST_STATE[itemId] = j.state;
+            applyStateToCard(card, j.state);
+            updateShortlistCount();
+            if (shortlistMode) filterToShortlist();
+          }
+        } catch (e) { console.warn('action failed', e); }
       });
     });
+
+    // ---- Shortlist filter (client-side, hides non-starred cards) ----
+    let shortlistMode = false;
+    const shortlistBtn = document.getElementById('shortlistPill');
+    shortlistBtn.addEventListener('click', () => {
+      shortlistMode = !shortlistMode;
+      if (shortlistMode) {
+        shortlistBtn.classList.add('ring-2', 'ring-amber-400');
+        filterToShortlist();
+      } else {
+        shortlistBtn.classList.remove('ring-2', 'ring-amber-400');
+        document.querySelectorAll('.item-card').forEach(c => c.classList.remove('hidden'));
+      }
+    });
+    function filterToShortlist() {
+      document.querySelectorAll('.item-card').forEach(card => {
+        const st = LATEST_STATE[card.dataset.itemId];
+        const starred = st && st.stars && st.stars.length > 0;
+        card.classList.toggle('hidden', !starred);
+      });
+    }
+    function updateShortlistCount() {
+      let n = 0;
+      Object.values(LATEST_STATE).forEach(st => { if (st.stars && st.stars.length) n++; });
+      document.getElementById('shortlistCount').textContent = n ? `(${n})` : '';
+    }
+
+    hydrate();
   </script>
 </body>
 </html>

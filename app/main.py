@@ -1,8 +1,9 @@
 """Weekend — weekly auto-curated guide for the Wishon household.
 
-Phase 1 serves a static page from `data/sample-week.json`. Phase 3 will write
-fresh `data/week-YYYY-MM-DD.json` files from the Wednesday cron, and this
-loader will pick up the newest one automatically.
+Phase 1 serves a static page from `data/sample-week.json`. Phase 2 adds
+votes (preference signal) and stars (family-coordination signal) backed
+by SQLite at /app/var/weekend.db. Phase 3 will write fresh
+`data/week-YYYY-MM-DD.json` files from the Wednesday cron.
 """
 
 from __future__ import annotations
@@ -11,10 +12,13 @@ import json
 from datetime import datetime
 from pathlib import Path
 
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
+from pydantic import BaseModel, Field
+
+from app import db
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 DATA_DIR = BASE_DIR / "data"
@@ -40,6 +44,16 @@ app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 templates = Jinja2Templates(directory=TEMPLATES_DIR)
 
 
+@app.on_event("startup")
+def _startup() -> None:
+    db.init_db()
+    # Lazy cleanup: drop any stars from prior weekends so the table doesn't grow forever.
+    data = load_current_week()
+    weekend_start = (data.get("weekend_dates") or [""])[0]
+    if weekend_start:
+        db.purge_old_stars(weekend_start)
+
+
 def load_current_week() -> dict:
     """Return the most recent week JSON. Falls back to sample-week.json."""
     weekly_files = sorted(DATA_DIR.glob("week-*.json"), reverse=True)
@@ -47,6 +61,17 @@ def load_current_week() -> dict:
     with path.open("r", encoding="utf-8") as f:
         return json.load(f)
 
+
+def _weekend_start() -> str:
+    """The first date of the current weekend — the partition key for votes/stars."""
+    dates = load_current_week().get("weekend_dates") or []
+    if not dates:
+        # Defensive fallback; shouldn't hit in normal operation
+        return datetime.utcnow().date().isoformat()
+    return dates[0]
+
+
+# ----- page -----
 
 @app.get("/", response_class=HTMLResponse)
 async def home(request: Request, category: str | None = None) -> HTMLResponse:
@@ -71,12 +96,79 @@ async def home(request: Request, category: str | None = None) -> HTMLResponse:
             "active_category": category or "all",
             "weekend_dates": data.get("weekend_dates", []),
             "weather_summary": data.get("weather_summary", {}),
-            # Featured venues render as always-on cards above the grid.
-            # Only show on "All" view so they don't get hidden by category filtering.
             "featured_venues": data.get("featured_venues", []) if not category or category == "all" else [],
+            "voters": sorted(db.VALID_VOTERS),
         },
     )
 
+
+# ----- API -----
+
+class VoteIn(BaseModel):
+    item_id: str = Field(min_length=1)
+    direction: str  # "up" | "down" | "clear"
+    voter_tag: str
+
+
+class StarIn(BaseModel):
+    item_id: str = Field(min_length=1)
+    voter_tag: str
+
+
+@app.post("/vote")
+def post_vote(payload: VoteIn) -> JSONResponse:
+    try:
+        if payload.direction == "clear":
+            db.clear_vote(payload.item_id, payload.voter_tag, _weekend_start())
+        else:
+            db.record_vote(payload.item_id, payload.direction, payload.voter_tag, _weekend_start())
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    return JSONResponse(_state_for_item(payload.item_id))
+
+
+@app.post("/star")
+def post_star(payload: StarIn) -> JSONResponse:
+    try:
+        db.set_star(payload.item_id, payload.voter_tag, _weekend_start())
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    return JSONResponse(_state_for_item(payload.item_id))
+
+
+@app.delete("/star")
+def delete_star(payload: StarIn) -> JSONResponse:
+    try:
+        db.clear_star(payload.item_id, payload.voter_tag, _weekend_start())
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    return JSONResponse(_state_for_item(payload.item_id))
+
+
+@app.get("/api/state")
+def get_api_state() -> JSONResponse:
+    return JSONResponse({
+        "weekend_start": _weekend_start(),
+        "items": db.get_state(_weekend_start()),
+    })
+
+
+@app.get("/preferences")
+def get_preferences(weeks: int = 8) -> JSONResponse:
+    return JSONResponse({
+        "window_weeks": weeks,
+        "items": db.get_preferences(weeks),
+    })
+
+
+def _state_for_item(item_id: str) -> dict:
+    """Return a single item's current state — used as the response for write endpoints
+    so the client can update without a separate GET."""
+    state = db.get_state(_weekend_start())
+    return {"item_id": item_id, "state": state.get(item_id, {"up": 0, "down": 0, "stars": [], "votes_by": {}})}
+
+
+# ----- health -----
 
 @app.get("/healthz")
 async def health() -> JSONResponse:
