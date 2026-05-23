@@ -29,7 +29,8 @@
       "drive_time_from_hillsboro_min": 30,
       "source_url": "https://www.oregoncc.org/attend/events",
       "event": null,
-      "empty_message": "Nothing public-facing this weekend."
+      "empty_message": "Nothing public-facing this weekend.",
+      "empty_image_url": "/static/img/venue-empty-state.png"
     }
   ],
   "items": [
@@ -62,18 +63,32 @@
       "image_hint": "manzanita beach oregon coast"
     },
     {
-      "id": "edgefield-country-show-may23",
-      "title": "Country Night at Edgefield",
-      "category": "concerts",
-      "audience_tags": ["date-night", "outdoors"],
-      "when": "Saturday, gates 5:30pm",
-      "where": "McMenamins Edgefield, Troutdale",
+      "id": "edgefield-history-tour-may23",
+      "title": "Edgefield's History & Art Tour",
+      "category": "hidden-gems",
+      "audience_tags": ["date-night", "family"],
+      "when": "Saturday, May 23 — 10am, 1pm, or 4pm (60–75 min)",
+      "where": "McMenamins Edgefield, 2126 SW Halsey St, Troutdale",
       "drive_time_from_hillsboro_min": 45,
-      "why": "Outdoor amphitheater under the trees. Sample listing — Phase 3 will pull the real act of the week. Genre filter is enforced (country, Christian, rock only).",
-      "weather_rationale": "Clear and 70°+ at showtime — ideal for the lawn.",
-      "source_url": "https://www.mcmenamins.com/edgefield-concerts-on-the-lawn",
-      "image_url": "/static/img/edgefield-concert.png",
-      "image_hint": "outdoor concert amphitheater sunset"
+      "why": "Guided walk through the 1911 Poor Farm grounds with stories behind the art, the buildings, and the murals tucked into every nook. Great way to see Edgefield beyond just the food and beer.",
+      "weather_rationale": "Sunny and 74° — perfect for a walking tour outdoors.",
+      "source_url": "https://www.mcmenamins.com/events/276226-edgefields-history-art-tour",
+      "image_url": "/static/img/edgefield-history-tour.png",
+      "image_hint": "edgefield manor troutdale historic estate gardens"
+    },
+    {
+      "id": "grand-lodge-garden-may23",
+      "title": "Grand Lodge Garden Experience",
+      "category": "family",
+      "audience_tags": ["family", "outdoors", "date-night", "kid-friendly"],
+      "when": "Saturday, May 23 — 10am–3pm",
+      "where": "McMenamins Grand Lodge, 3505 Pacific Ave, Forest Grove",
+      "drive_time_from_hillsboro_min": 20,
+      "why": "20 minutes from home and most people in Hillsboro have never wandered the Grand Lodge gardens. Pair it with lunch in the pub. Cheap, easy, scratches the McMenamins itch.",
+      "weather_rationale": "Sunny and 74° — peak garden weather.",
+      "source_url": "https://www.mcmenamins.com/events/276026-grand-lodge-garden-experience",
+      "image_url": "/static/img/grand-lodge-garden.png",
+      "image_hint": "grand lodge forest grove gardens rhododendrons"
     },
     {
       "id": "latourell-falls-loop",
