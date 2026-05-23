@@ -192,6 +192,80 @@ def _extract_json(text: str) -> dict:
     return json.loads(candidate)
 
 
+def _normalize_week_data(week_data: dict) -> dict:
+    """Accept common Claude field-name drift (curated_items vs items, location vs where,
+    meta.special_context vs calendar_context) and remap to the canonical schema. Without
+    this, a perfectly good 22-item generation gets dropped on the floor because Claude
+    decided to be creative with key names."""
+
+    # Top-level: pull calendar_context out of meta if Claude wrapped it
+    if "calendar_context" not in week_data:
+        meta = week_data.get("meta") or {}
+        if isinstance(meta, dict):
+            week_data["calendar_context"] = (
+                meta.get("special_context") or meta.get("calendar_context") or ""
+            )
+
+    # items: accept curated_items as alias
+    if "items" not in week_data and "curated_items" in week_data:
+        week_data["items"] = week_data["curated_items"]
+
+    # featured_venues + venue_scan_log: split a single venue_scan array by status
+    if "featured_venues" not in week_data and "venue_scan" in week_data:
+        featured, scan_log = [], []
+        for v in week_data.get("venue_scan", []) or []:
+            status = v.get("status") or v.get("state") or "no_event"
+            event = v.get("event") or None
+            if status == "has_event" and event:
+                featured.append({
+                    "id": (v.get("venue") or "venue").lower().replace(" ", "-"),
+                    "name": v.get("venue") or "",
+                    "where": v.get("address") or v.get("location") or v.get("where") or "",
+                    "source_url": v.get("url") or v.get("source_url") or "",
+                    "event": {
+                        "title": event.get("name") or event.get("title") or "",
+                        "when": event.get("dates") or event.get("when") or "",
+                        "why": event.get("description") or event.get("why") or "",
+                        "audience_tags": event.get("audience_tags") or (
+                            [event["audience_fit"]] if event.get("audience_fit") else []
+                        ),
+                        "image_hint": event.get("image_hint") or "",
+                    },
+                })
+            else:
+                scan_log.append({
+                    "venue": v.get("venue") or "",
+                    "url": v.get("url") or v.get("source_url") or "",
+                    "state": status,
+                    "note": v.get("notes") or v.get("note") or "",
+                })
+        week_data["featured_venues"] = featured
+        week_data["venue_scan_log"] = scan_log
+
+    # Per-item field name normalization
+    for item in week_data.get("items", []) or []:
+        if "where" not in item and "location" in item:
+            item["where"] = item["location"]
+        if "why" not in item:
+            item["why"] = item.get("description") or item.get("why_it_fits") or ""
+        if "audience_tags" not in item or not isinstance(item.get("audience_tags"), list):
+            item["audience_tags"] = []
+        # Claude sometimes uses non-canonical categories. Map known variants.
+        cat = item.get("category", "")
+        if cat in ("holiday", "teen", "date", "kid-friendly", "adults-only"):
+            tag = "date-night" if cat == "date" else cat
+            if tag not in item["audience_tags"]:
+                item["audience_tags"].append(tag)
+            # Holiday items default to family unless something more specific is implied
+            item["category"] = "family"
+        elif cat == "wine-and-beer":
+            item["category"] = "south-valley"
+        elif cat in ("indoors-and-rainy-day", "indoor"):
+            item["category"] = "indoor-historical"
+
+    return week_data
+
+
 def _write_run_log(weekend_dates: list[str], stats: dict, usage: dict, errors: list[str]) -> None:
     LOG_DIR.mkdir(parents=True, exist_ok=True)
     log_path = LOG_DIR / f"{datetime.now(PACIFIC).date().isoformat()}-run.md"
@@ -291,6 +365,7 @@ def run() -> dict:
 
     try:
         week_data = _extract_json(response_text)
+        week_data = _normalize_week_data(week_data)
     except Exception as e:
         errors.append(f"JSON parse: {e}")
         # Save the raw response for debugging
