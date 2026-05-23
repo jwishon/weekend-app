@@ -152,6 +152,12 @@ def _write_run_log(weekend_dates: list[str], stats: dict, usage: dict, errors: l
 - Items passed verification: {stats.get('passed', 0)}
 - Items quarantined: {stats.get('quarantined', 0)}
 
+## Images
+- Real (scraped og:image): {stats[images][scraped]}
+- AI (kie generated): {stats[images][ai]}
+- Cached (reused): {stats[images][cached]}
+- Failed (gradient fallback): {stats[images][failed]}
+
 ## Token usage
 - Input: {usage.get('input_tokens', 0)}
 - Output: {usage.get('output_tokens', 0)}
@@ -189,7 +195,8 @@ def run() -> dict:
     DATA_DIR.mkdir(parents=True, exist_ok=True)
     LOG_DIR.mkdir(parents=True, exist_ok=True)
     errors: list[str] = []
-    stats: dict = {"published": False, "generated": 0, "passed": 0, "quarantined": 0, "quarantine_list": []}
+    stats: dict = {"published": False, "generated": 0, "passed": 0, "quarantined": 0,
+                   "quarantine_list": [], "images": {"scraped": 0, "ai": 0, "cached": 0, "failed": 0}}
     usage: dict = {}
 
     weekend_dates = upcoming_weekend()
@@ -257,14 +264,15 @@ def run() -> dict:
     stats["quarantine_list"] = quarantined
 
     if len(passed) >= MIN_ITEMS_TO_PUBLISH:
-        # Generate per-item images via kie.ai for everything that passed verification.
-        # Failures are non-fatal — items just go out without image_url and the
-        # template falls back to a gradient placeholder.
+        # Source images for everything that passed verification — try real
+        # photos from the source page first (og:image), fall back to AI.
+        # Non-fatal: items without an image just render with a category gradient.
         try:
-            images.generate_for_items(passed)
+            img_summary = images.generate_for_items(passed)
+            stats["images"] = img_summary
         except Exception as e:
-            log.exception("image generation step crashed")
-            errors.append(f"image generation: {e}")
+            log.exception("image sourcing step crashed")
+            errors.append(f"image sourcing: {e}")
         week_data["items"] = passed
         out_path = DATA_DIR / f"week-{weekend_dates[0]}.json"
         out_path.write_text(json.dumps(week_data, indent=2, ensure_ascii=False), encoding="utf-8")
