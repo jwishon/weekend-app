@@ -153,10 +153,10 @@ def _write_run_log(weekend_dates: list[str], stats: dict, usage: dict, errors: l
 - Items quarantined: {stats.get('quarantined', 0)}
 
 ## Images
-- Real (scraped og:image): {stats[images][scraped]}
-- AI (kie generated): {stats[images][ai]}
-- Cached (reused): {stats[images][cached]}
-- Failed (gradient fallback): {stats[images][failed]}
+- Real (scraped og:image): {stats['images']['scraped']}
+- AI (kie generated): {stats['images']['ai']}
+- Cached (reused): {stats['images']['cached']}
+- Failed (gradient fallback): {stats['images']['failed']}
 
 ## Token usage
 - Input: {usage.get('input_tokens', 0)}
