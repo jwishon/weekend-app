@@ -76,11 +76,18 @@ def _shutdown() -> None:
         _scheduler.shutdown(wait=False)
 
 
+VAR_DATA_DIR = Path("/app/var/data")  # cron-published weeks live here (persists on QNAP)
+
+
 def load_current_week() -> dict:
-    """Return the most recent week JSON. Falls back to sample-week.json."""
-    weekly_files = sorted(DATA_DIR.glob("week-*.json"), reverse=True)
-    path = weekly_files[0] if weekly_files else DATA_DIR / "sample-week.json"
-    with path.open("r", encoding="utf-8") as f:
+    """Return the most recent week JSON. Prefers cron-published weeks in the
+    persistent volume; falls back to the in-image sample-week.json."""
+    if VAR_DATA_DIR.exists():
+        weekly_files = sorted(VAR_DATA_DIR.glob("week-*.json"), reverse=True)
+        if weekly_files:
+            with weekly_files[0].open("r", encoding="utf-8") as f:
+                return json.load(f)
+    with (DATA_DIR / "sample-week.json").open("r", encoding="utf-8") as f:
         return json.load(f)
 
 

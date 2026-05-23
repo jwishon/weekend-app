@@ -38,7 +38,10 @@ log = logging.getLogger("weekend.cron")
 REPO_ROOT = Path(__file__).resolve().parent.parent
 PROMPT_PATH = REPO_ROOT / "prompts" / "wednesday-research.md"
 INPUTS_DIR = REPO_ROOT / "prompts" / "inputs"
-DATA_DIR = REPO_ROOT / "data"
+# In-image directory has the sample-week.json fallback. Cron output goes to
+# /app/var/data/ which is bind-mounted to QNAP and survives container restarts.
+DATA_DIR = Path("/app/var/data")
+DATA_DIR.mkdir(parents=True, exist_ok=True)
 LOG_DIR = Path("/app/var/logs")
 
 MIN_ITEMS_TO_PUBLISH = 6  # below this, keep prior week live
