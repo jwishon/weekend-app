@@ -221,12 +221,13 @@ def get_api_last_run() -> JSONResponse:
 
 @app.get("/api/draft")
 def get_api_draft() -> JSONResponse:
-    """Return the most recent draft file (the raw week_data from the latest cron run,
-    before the publish gate). Use to see what Claude generated when a run was rejected."""
+    """Return the most-recently-written draft file (raw week_data from the latest cron run).
+    Sorts by mtime so we get the actual latest run, not an older file that happens to be
+    later alphabetically."""
     var_data = Path("/app/var/data")
     if not var_data.exists():
         return JSONResponse({"error": "no var/data dir"}, status_code=404)
-    drafts = sorted(var_data.glob("draft-*.json"), reverse=True)
+    drafts = sorted(var_data.glob("draft-*.json"), key=lambda p: p.stat().st_mtime, reverse=True)
     if not drafts:
         return JSONResponse({"error": "no draft files yet"}, status_code=404)
     with drafts[0].open("r", encoding="utf-8") as f:
@@ -235,12 +236,11 @@ def get_api_draft() -> JSONResponse:
 
 @app.get("/api/quarantine")
 def get_api_quarantine() -> JSONResponse:
-    """Return the most recent quarantine file — items that were rejected by the verifier,
-    each with a _verify_reason explaining why. Critical for prompt/verifier tuning."""
+    """Return the most-recently-written quarantine file. Sorts by mtime, not filename."""
     var_data = Path("/app/var/data")
     if not var_data.exists():
         return JSONResponse({"error": "no var/data dir"}, status_code=404)
-    quars = sorted(var_data.glob("quarantine-*.json"), reverse=True)
+    quars = sorted(var_data.glob("quarantine-*.json"), key=lambda p: p.stat().st_mtime, reverse=True)
     if not quars:
         return JSONResponse({"error": "no quarantine files yet"}, status_code=404)
     with quars[0].open("r", encoding="utf-8") as f:
