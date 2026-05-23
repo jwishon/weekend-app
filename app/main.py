@@ -12,12 +12,17 @@ import json
 from datetime import datetime
 from pathlib import Path
 
-from fastapi import FastAPI, HTTPException, Request
+import os
+
+from apscheduler.schedulers.background import BackgroundScheduler
+from apscheduler.triggers.cron import CronTrigger
+from fastapi import FastAPI, Header, HTTPException, Request
 from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel, Field
 
+from app import cron as cron_mod
 from app import db
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -44,14 +49,31 @@ app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 templates = Jinja2Templates(directory=TEMPLATES_DIR)
 
 
+_scheduler: BackgroundScheduler | None = None
+
+
 @app.on_event("startup")
 def _startup() -> None:
+    global _scheduler
     db.init_db()
     # Lazy cleanup: drop any stars from prior weekends so the table doesn't grow forever.
     data = load_current_week()
     weekend_start = (data.get("weekend_dates") or [""])[0]
     if weekend_start:
         db.purge_old_stars(weekend_start)
+    # Scheduler — only fire if we have the API key (avoids accidental runs in dev)
+    if os.environ.get("ANTHROPIC_API_KEY"):
+        _scheduler = BackgroundScheduler(timezone="America/Los_Angeles")
+        # Wednesday 7am Pacific
+        _scheduler.add_job(cron_mod.run, CronTrigger(day_of_week="wed", hour=7, minute=0),
+                           id="weekly-research", coalesce=True, max_instances=1)
+        _scheduler.start()
+
+
+@app.on_event("shutdown")
+def _shutdown() -> None:
+    if _scheduler:
+        _scheduler.shutdown(wait=False)
 
 
 def load_current_week() -> dict:
@@ -166,6 +188,22 @@ def _state_for_item(item_id: str) -> dict:
     so the client can update without a separate GET."""
     state = db.get_state(_weekend_start())
     return {"item_id": item_id, "state": state.get(item_id, {"up": 0, "down": 0, "stars": [], "votes_by": {}})}
+
+
+# ----- admin -----
+
+@app.post("/admin/run-cron")
+def admin_run_cron(x_cron_secret: str = Header(default="")) -> JSONResponse:
+    """Manual trigger for the Wednesday research pipeline. Requires X-Cron-Secret header
+    matching the CRON_SECRET env var. Use for testing and recovery after failed runs.
+    Runs synchronously — returns when the pipeline finishes (typically 30s-2min)."""
+    expected = os.environ.get("CRON_SECRET", "")
+    if not expected:
+        raise HTTPException(status_code=503, detail="CRON_SECRET not configured")
+    if x_cron_secret != expected:
+        raise HTTPException(status_code=401, detail="bad secret")
+    result = cron_mod.run()
+    return JSONResponse(result)
 
 
 # ----- health -----
