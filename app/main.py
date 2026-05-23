@@ -247,6 +247,21 @@ def get_api_quarantine() -> JSONResponse:
         return JSONResponse({"file": quars[0].name, "data": json.load(f)})
 
 
+@app.get("/api/last-raw")
+def get_api_last_raw() -> JSONResponse:
+    """Return the raw Claude response from the most recent failed-parse cron run.
+    Only written when JSON parsing fails — useful for diagnosing 'No JSON object found'
+    cases where we need to see what Claude actually returned."""
+    var_logs = Path("/app/var/logs")
+    if not var_logs.exists():
+        return JSONResponse({"error": "no var/logs dir"}, status_code=404)
+    raws = sorted(var_logs.glob("*-raw.txt"), reverse=True)
+    if not raws:
+        return JSONResponse({"error": "no raw files yet — last parse may have succeeded"}, status_code=404)
+    text = raws[0].read_text(encoding="utf-8", errors="replace")
+    return JSONResponse({"file": raws[0].name, "length": len(text), "text": text})
+
+
 def _state_for_item(item_id: str) -> dict:
     """Return a single item's current state — used as the response for write endpoints
     so the client can update without a separate GET."""
