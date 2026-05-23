@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0f172a" />
+  <title>Weekend — Wishon Household</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="/static/styles.css" />
+</head>
+<body class="bg-slate-50 text-slate-900 font-sans antialiased min-h-screen">
+
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-20 backdrop-blur supports-[backdrop-filter]:bg-white/85">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4">
+      <div class="flex items-center justify-between gap-4">
+        <div>
+          <h1 class="text-xl sm:text-2xl font-extrabold tracking-tight text-slate-900">Weekend</h1>
+          {% if weekend_dates %}
+          <p class="text-xs sm:text-sm text-slate-500 mt-0.5">
+            {{ weekend_dates[0] }} &ndash; {{ weekend_dates[-1] }}
+          </p>
+          {% endif %}
+        </div>
+        <div class="text-right text-xs sm:text-sm text-slate-500 leading-tight">
+          <div class="hidden sm:block">Curated for</div>
+          <div class="font-medium text-slate-700">John, Tonia, Logan, Hailey</div>
+        </div>
+      </div>
+    </div>
+
+    {% if weather_summary %}
+    <div class="border-t border-slate-100 bg-slate-50/60">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2 overflow-x-auto no-scrollbar">
+        <div class="flex gap-x-5 gap-y-1 text-xs whitespace-nowrap">
+          {% for region, summary in weather_summary.items() %}
+          <div class="flex items-center gap-1.5">
+            <span class="font-semibold text-slate-700 capitalize">{{ region.replace('-', ' ') }}:</span>
+            <span class="text-slate-600">{{ summary }}</span>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+    {% endif %}
+
+    <nav class="border-t border-slate-100 overflow-x-auto no-scrollbar">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
+        <div class="flex gap-2 whitespace-nowrap">
+          <a href="/" class="px-3 py-1.5 rounded-full text-sm font-medium transition {% if active_category == 'all' %}bg-slate-900 text-white{% else %}bg-slate-100 text-slate-700 hover:bg-slate-200{% endif %}">All</a>
+          {% for cat in categories %}
+          <a href="/?category={{ cat }}" class="px-3 py-1.5 rounded-full text-sm font-medium transition {% if active_category == cat %}bg-slate-900 text-white{% else %}bg-slate-100 text-slate-700 hover:bg-slate-200{% endif %}">{{ cat.replace('-', ' ').title() }}</a>
+          {% endfor %}
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 sm:py-8">
+
+    {% if not items %}
+    <div class="text-center py-16 text-slate-500">
+      <p class="text-lg font-medium">Nothing in this category this weekend.</p>
+      <a href="/" class="inline-block mt-2 text-sm text-blue-600 hover:underline">See everything</a>
+    </div>
+    {% endif %}
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+      {% for item in items %}
+      <article class="bg-white rounded-2xl shadow-sm hover:shadow-md transition overflow-hidden flex flex-col">
+        {% if item.image_url %}
+        <div class="aspect-video bg-slate-100 overflow-hidden">
+          <img src="{{ item.image_url }}" alt="{{ item.title }}" loading="lazy" class="w-full h-full object-cover" />
+        </div>
+        {% else %}
+        <div class="aspect-video bg-gradient-to-br from-slate-200 to-slate-400 flex items-center justify-center">
+          <span class="text-white text-sm font-semibold uppercase tracking-wider">{{ item.category.replace('-', ' ') }}</span>
+        </div>
+        {% endif %}
+
+        <div class="p-4 sm:p-5 flex flex-col flex-1 gap-3">
+          <div class="text-xs font-semibold uppercase tracking-wide text-slate-500">{{ item.category.replace('-', ' ') }}</div>
+
+          <h2 class="text-lg sm:text-xl font-bold leading-tight text-slate-900">{{ item.title }}</h2>
+
+          <div class="flex flex-wrap gap-1.5">
+            {% for tag in item.audience_tags %}
+            <span class="text-xs px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 font-medium">{{ tag }}</span>
+            {% endfor %}
+          </div>
+
+          <dl class="text-sm text-slate-600 space-y-1">
+            <div class="flex gap-2">
+              <dt class="font-semibold text-slate-500 w-14 shrink-0">When</dt>
+              <dd>{{ item.when }}</dd>
+            </div>
+            <div class="flex gap-2">
+              <dt class="font-semibold text-slate-500 w-14 shrink-0">Where</dt>
+              <dd>{{ item.where }}</dd>
+            </div>
+            <div class="flex gap-2">
+              <dt class="font-semibold text-slate-500 w-14 shrink-0">Drive</dt>
+              <dd>{{ item.drive_time_from_hillsboro_min }} min from Hillsboro</dd>
+            </div>
+          </dl>
+
+          <p class="text-sm text-slate-700 leading-relaxed">{{ item.why }}</p>
+
+          {% if item.weather_rationale %}
+          <p class="text-xs text-slate-500 italic flex items-start gap-1.5">
+            <span aria-hidden="true">☀️</span>
+            <span>{{ item.weather_rationale }}</span>
+          </p>
+          {% endif %}
+
+          <div class="mt-auto pt-3 border-t border-slate-100 flex items-center justify-between">
+            <div class="flex items-center gap-1">
+              <button type="button" data-vote="up" data-item-id="{{ item.id }}" aria-label="Like {{ item.title }}" class="p-2.5 rounded-lg hover:bg-green-50 active:bg-green-100 transition text-slate-400 hover:text-green-600">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 10v12"/><path d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H7a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L15 2a2 2 0 1 1 4 2.66Z"/></svg>
+              </button>
+              <button type="button" data-vote="down" data-item-id="{{ item.id }}" aria-label="Skip {{ item.title }}" class="p-2.5 rounded-lg hover:bg-red-50 active:bg-red-100 transition text-slate-400 hover:text-red-600">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 14V2"/><path d="M9 18.12 10 14H4.17a2 2 0 0 1-1.92-2.56l2.33-8A2 2 0 0 1 6.5 2H17a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2.76a2 2 0 0 0-1.79 1.11L9 22a2 2 0 1 1-4-2.66Z"/></svg>
+              </button>
+            </div>
+            {% if item.source_url %}
+            <a href="{{ item.source_url }}" target="_blank" rel="noopener noreferrer" class="text-xs text-slate-400 hover:text-slate-600 underline">source</a>
+            {% endif %}
+          </div>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+  </main>
+
+  <footer class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 text-center text-xs text-slate-400">
+    {% if data.generated_at %}Generated {{ data.generated_at }}{% else %}Phase 1 — sample data{% endif %} · weekend.riptide9.com
+  </footer>
+
+  <script>
+    // Phase 1: thumbs are purely client-side / presentational.
+    // Phase 2 will wire POST /vote with optimistic UI.
+    document.querySelectorAll('[data-vote]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const current = btn.getAttribute('data-voted');
+        const next = btn.dataset.vote;
+        // Clear sibling
+        btn.parentElement.querySelectorAll('[data-vote]').forEach(b => b.removeAttribute('data-voted'));
+        // Toggle self
+        if (current !== next) {
+          btn.setAttribute('data-voted', next);
+        }
+      });
+    });
+  </script>
+</body>
+</html>

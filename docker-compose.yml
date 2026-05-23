@@ -1,0 +1,11 @@
+services:
+  weekend:
+    build: .
+    container_name: weekend-app
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./data:/app/data
+    restart: unless-stopped
+    environment:
+      - TZ=America/Los_Angeles

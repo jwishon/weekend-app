@@ -1,0 +1,11 @@
+/* Hide scrollbars on horizontally-scrolling rows (category pills, weather strip)
+   while keeping the rows scrollable on mobile. */
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* Snappier tap feedback on mobile */
+button, a { -webkit-tap-highlight-color: transparent; }
+
+/* Lock voted state visually (phase 1 — purely client-side; phase 2 wires API) */
+[data-voted="up"] { color: rgb(22 163 74); background-color: rgb(240 253 244); }
+[data-voted="down"] { color: rgb(220 38 38); background-color: rgb(254 242 242); }
