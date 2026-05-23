@@ -271,6 +271,63 @@ def _state_for_item(item_id: str) -> dict:
 
 # ----- admin -----
 
+@app.post("/admin/patch-memorial-day")
+def admin_patch_memorial_day(x_cron_secret: str = Header(default="")) -> JSONResponse:
+    """One-shot patch for Memorial Day weekend 2026:
+    1. Set the dodgeball featured-venue image_url to a manually generated PNG.
+    2. Add Westside Comic Con as a new item with its own image.
+    Targets the most-recently-written week file in /app/var/data/."""
+    expected = os.environ.get("CRON_SECRET", "")
+    if not expected:
+        raise HTTPException(status_code=503, detail="CRON_SECRET not configured")
+    if x_cron_secret != expected:
+        raise HTTPException(status_code=401, detail="bad secret")
+
+    var_data = Path("/app/var/data")
+    week_files = sorted(var_data.glob("week-*.json"), key=lambda p: p.stat().st_mtime, reverse=True)
+    if not week_files:
+        raise HTTPException(status_code=404, detail="no week file to patch")
+    week_path = week_files[0]
+    with week_path.open("r", encoding="utf-8") as f:
+        data = json.load(f)
+
+    changes = []
+
+    # Patch dodgeball featured-venue image
+    for v in data.get("featured_venues", []):
+        if "Expo Center" in (v.get("name") or "") and v.get("event"):
+            v["event"]["image_url"] = "/static/img/portland-expo-dodgeball-action.png"
+            changes.append(f"set image_url on featured venue: {v.get('name')}")
+            break
+
+    # Add Westside Comic Con as an item if not already present
+    existing_ids = {i.get("id") for i in data.get("items", [])}
+    if "westside-comic-con" not in existing_ids:
+        comic_con = {
+            "id": "westside-comic-con",
+            "title": "Westside Comic Con — Hillsboro debut",
+            "category": "family",
+            "audience_tags": ["family", "teens", "kid-friendly", "holiday"],
+            "when": "Saturday 9am–10pm, Sunday 9am–6pm",
+            "where": "Wingspan Event & Conference Center at Westside Commons, 801 NE 34th Ave, Hillsboro",
+            "drive_time_from_hillsboro_min": 8,
+            "why": "Washington County's first major pop-culture convention — 5 minutes from home. 60+ creators from across the PNW, cosplay, gaming tables, vendor booths, anime art, collectibles. $25 weekend pass. Proceeds benefit Make-A-Wish Oregon. Perfect Logan/Hailey territory.",
+            "weather_rationale": "Fully indoor — rain or shine.",
+            "source_url": "https://www.westsidecomiccon.com/",
+            "image_url": "/static/img/westside-comic-con-hillsboro.png",
+            "image_hint": "comic con convention floor cosplay vendor booths Hillsboro",
+        }
+        items = data.setdefault("items", [])
+        items.insert(0, comic_con)  # surface near the top
+        changes.append("added Westside Comic Con item")
+
+    if not changes:
+        return JSONResponse({"ok": True, "changes": [], "note": "nothing to patch — already done?"})
+
+    week_path.write_text(json.dumps(data, indent=2, ensure_ascii=False), encoding="utf-8")
+    return JSONResponse({"ok": True, "file": week_path.name, "changes": changes})
+
+
 @app.post("/admin/run-cron")
 def admin_run_cron(x_cron_secret: str = Header(default="")) -> JSONResponse:
     """Manual trigger for the Wednesday research pipeline. Requires X-Cron-Secret header
