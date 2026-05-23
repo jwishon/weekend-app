@@ -29,11 +29,8 @@
     <img src="/static/img/hero-northwest.png" alt="Pacific Northwest landscape" class="absolute inset-0 w-full h-full object-cover" />
     <div class="absolute inset-0 bg-gradient-to-t from-slate-900/70 via-slate-900/30 to-slate-900/20"></div>
     <div class="relative max-w-7xl mx-auto h-full px-4 sm:px-6 lg:px-8 flex flex-col justify-end pb-5 sm:pb-7">
-      <h1 class="text-3xl sm:text-5xl lg:text-6xl font-extrabold text-white tracking-tight drop-shadow-md">Weekend</h1>
-      <p class="text-sm sm:text-base text-slate-100/90 mt-1 font-medium">Things to do</p>
-      {% if weekend_dates %}
-      <p class="text-xs sm:text-sm text-slate-200/80 mt-0.5">{{ weekend_dates[0] }} &ndash; {{ weekend_dates[-1] }}</p>
-      {% endif %}
+      <h1 class="text-3xl sm:text-5xl lg:text-6xl font-extrabold text-white tracking-tight drop-shadow-md">Our Weekend</h1>
+      <p class="text-sm sm:text-base text-slate-100/90 mt-1 font-medium">What's worth doing around here</p>
     </div>
   </section>
 
@@ -41,7 +38,7 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4">
       <div class="flex items-center justify-between gap-4">
         <div>
-          <h1 class="text-xl sm:text-2xl font-extrabold tracking-tight text-slate-900">Weekend</h1>
+          <h1 class="text-xl sm:text-2xl font-extrabold tracking-tight text-slate-900">Things to do</h1>
           {% if weekend_dates %}
           <p class="text-xs sm:text-sm text-slate-500 mt-0.5">
             {{ weekend_dates[0] }} &ndash; {{ weekend_dates[-1] }}
