@@ -232,12 +232,21 @@ def _normalize_week_data(week_data: dict) -> dict:
                 meta.get("special_context") or meta.get("calendar_context") or ""
             )
 
-    # items: accept curated_items as alias
-    if "items" not in week_data and "curated_items" in week_data:
-        week_data["items"] = week_data["curated_items"]
+    # items: accept curated_items and part_b_curated_items as aliases.
+    # 'part_b_curated_items' is the two-section response shape Claude started returning
+    # on 2026-05-27 — Part A is the venue scan, Part B is the curated picks. Without
+    # this alias, a 21-item generation gets dropped on the floor (May 27 incident).
+    if "items" not in week_data:
+        if "curated_items" in week_data:
+            week_data["items"] = week_data["curated_items"]
+        elif "part_b_curated_items" in week_data:
+            week_data["items"] = week_data["part_b_curated_items"]
 
     # featured_venues + venue_scan_log: split a single venue_scan into both. Claude
     # sometimes returns venue_scan as a list, sometimes as a dict keyed by venue slug.
+    # 'part_a_venue_scan' is the matching key from the two-section response shape.
+    if "featured_venues" not in week_data and "venue_scan" not in week_data and "part_a_venue_scan" in week_data:
+        week_data["venue_scan"] = week_data["part_a_venue_scan"]
     if "featured_venues" not in week_data and "venue_scan" in week_data:
         vs_raw = week_data.get("venue_scan")
         if isinstance(vs_raw, dict):
@@ -294,10 +303,16 @@ def _normalize_week_data(week_data: dict) -> dict:
             item["id"] = slug or "item"
         if "where" not in item and "location" in item:
             item["where"] = item["location"]
-        if "when" not in item and "date" in item:
-            item["when"] = item["date"]
+        if "when" not in item:
+            item["when"] = item.get("date") or item.get("dates") or ""
         if "why" not in item:
             item["why"] = item.get("description") or item.get("why_it_fits") or ""
+        # source_url: verifier requires this; Claude often returns 'url' instead (May 28 incident)
+        if "source_url" not in item and "url" in item:
+            item["source_url"] = item["url"]
+        # audience_tags: accept 'audience' alias (May 28 incident — 22/22 had audience but blank audience_tags)
+        if (not isinstance(item.get("audience_tags"), list) or not item.get("audience_tags")) and isinstance(item.get("audience"), list):
+            item["audience_tags"] = item["audience"]
         if "audience_tags" not in item or not isinstance(item.get("audience_tags"), list):
             item["audience_tags"] = []
         # Claude sometimes uses non-canonical categories. Map known variants.
