@@ -315,6 +315,12 @@ def _normalize_week_data(week_data: dict) -> dict:
             item["audience_tags"] = item["audience"]
         if "audience_tags" not in item or not isinstance(item.get("audience_tags"), list):
             item["audience_tags"] = []
+        # image_hint: Claude sometimes omits entirely. Synthesize from title + where + category
+        # so images.py has something to feed kie.ai. Without this, images skip silently and
+        # the page renders all spotlight placeholders (May 28 incident).
+        if not item.get("image_hint"):
+            parts = [item.get("title", ""), item.get("where", ""), item.get("category", "")]
+            item["image_hint"] = " ".join(p for p in parts if p).strip()
         # Claude sometimes uses non-canonical categories. Map known variants.
         cat = item.get("category", "")
         if cat in ("holiday", "teen", "date", "kid-friendly", "adults-only"):
